@@ -6,8 +6,10 @@ require.config({
 		'prototype': "https://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype",
 		'damas': "damas",
 		'svg-pan-zoom': 'graphViewer/svg-pan-zoom',
-		'graph': "graphViewer/graph",
+		'graph-common': "graphViewer/graph_common",
+		'damasGraph': "graphViewer/graph",
 		'springy': "graphViewer/springy",
+		'interactions': "interactions",
 		'graph-client': "graph-client",
 		'ao': "assetViewer/assetOverlay",
 		'av': "assetViewer/assetViewerSelector"
@@ -15,22 +17,32 @@ require.config({
 });
 		//'': "scripts/assetViewer/assetOverlay.css"
 
-require(["prototype", "damas", "graph", "springy", "svg-pan-zoom","graph-client", "ao", "av" ], function(p, damas, graph, Springy, svgPanZoom){
+//require(["prototype", "damas", "graph", "springy", "svg-pan-zoom","damas-graph", "ao", "av" ], function(p, damas, graph, Springy, svgPanZoom){
+//require(["prototype", "damas", "damasGraph", "graph-client", "ao", "av" ], function(p, damas, damasGraph){
+require(["prototype", "damas", "damasGraph", "graph-client", "ao", "av", "interactions" ], function(p, damas, damasGraph){
 	//window.damas = damas;
 	damas.server = '/damas/server';
-	window.Springy = Springy;
-	//damas.getUser();
-	//var roots = JSON.parse( damas.read( damas.utils.command( { cmd: 'roots' } ).text ));
-	window.svg = damassvggraph.getSVG();
-	document.body.appendChild(svg);
-	svg.style.height = window.innerHeight + 'px';
-	springy_graph = new Springy.Graph();
-	var springy_layout = new Springy.Layout.ForceDirected(springy_graph, 300.0, 300.0, 0.5);
-	window.svgpanzoomoinstance = svgPanZoom('#svggraph' );
 
-	springy_damas.currentBB = springy_layout.getBoundingBox();
-	var springy_renderer = springy_damas.get_renderer( springy_layout );
-	springy_renderer.start();
+
+loadCss('scripts/graphViewer/graph.css');
+
+	damasGraph.init(document.body);
+	//window.Springy = Springy;
+	window.damasGraph = damasGraph;
+	enable_drop( damasGraph.svg, damasGraph);
+
+	//damas.getUser();
+
+	//window.svg = damassvggraph.getSVG();
+	//document.body.appendChild(svg);
+	damasGraph.svg.style.height = window.innerHeight + 'px';
+	//springy_graph = new Springy.Graph();
+	//var springy_layout = new Springy.Layout.ForceDirected(springy_graph, 300.0, 300.0, 0.5);
+	//window.svgpanzoomoinstance = svgPanZoom('#svggraph' );
+
+	//springy_damas.currentBB = springy_layout.getBoundingBox();
+	//var springy_renderer = springy_damas.get_renderer( springy_layout );
+	//springy_renderer.start();
 
 	//
 	// we ask server the root nodes to show
@@ -41,7 +53,8 @@ require(["prototype", "damas", "graph", "springy", "svg-pan-zoom","graph-client"
 			for(i=0;i<nodes.length;i++)
 			{
 				var n = nodes[i];
-				springy_graph.newNode(n);
+				//springy_graph.newNode(n);
+				damasGraph.newNode(n);
 			}
 		});
 	});
@@ -57,6 +70,6 @@ function loadCss(url) {
 }
 
 window.addEventListener("resize", function() {
-	svg.style.height = window.innerHeight + 'px';
+	damasGraph.svg.style.height = window.innerHeight + 'px';
 });
 

@@ -5,8 +5,9 @@ document.addEventListener('DOMContentLoaded', function() {
 require.config({
 	paths: {
 		'prototype': "https://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype",
-//		'damas': "damas",
+		'damas': "damas",
 		'd3': 'graphViewer/d3.min',
+		'graph-common': "graphViewer/graph_common",
 		'graph': 'graphViewer/graph_d3',
 		'interactions': "graphViewer/interactions",
 		'ao': "assetViewer/assetOverlay",
@@ -15,7 +16,7 @@ require.config({
 });
 
 
-require(["prototype","d3", "graph", "interactions", "ao", "av" ], function(p, damas, d3, graph, interac){
+require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], function(p, damas, d3, damasGraph, interac){
 //	window.damas = damas;
 //	damas.server = '/damas/server';
 
@@ -23,7 +24,11 @@ require(["prototype","d3", "graph", "interactions", "ao", "av" ], function(p, da
 		var graph = document.createElement('div');
 		graph.setAttribute('id', 'graph');
 		document.body.appendChild(graph);
-		svg = damassvggraph.getSVG();
+		//svg = damassvggraph.getSVG();
+
+
+		damasGraph.init( graph );
+		damasGraph.load( "scripts/graphViewer/bigbuckbunny_characters.json" );
 
 		var svgD = document.getElementById('svggraph');
 		svgD.style.height = window.innerHeight - 4 + 'px';
