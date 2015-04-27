@@ -6,7 +6,7 @@ require.config({
 	paths: {
 		'prototype': "https://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype",
 		'damas': "damas",
-		'd3': 'graphViewer/d3.min',
+		'd3': 'graphViewer/d3',
 		'graph-common': "graphViewer/graph_common",
 		'graph': 'graphViewer/graph_d3',
 		'interactions': "graphViewer/interactions",
@@ -17,51 +17,31 @@ require.config({
 
 
 require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], function(p, damas, d3, damasGraph, interac){
-//	window.damas = damas;
-//	damas.server = '/damas/server';
-
-//	d3.json("test_mat.json", function(error, json) {
-		var graph = document.createElement('div');
-		graph.setAttribute('id', 'graph');
-		document.body.appendChild(graph);
-		//svg = damassvggraph.getSVG();
-
-
-		damasGraph.init( graph );
-		damasGraph.load( "scripts/graphViewer/bigbuckbunny_characters.json" );
-
-		var svgD = document.getElementById('svggraph');
-		svgD.style.height = window.innerHeight - 4 + 'px';
-		svgD.style.width = window.innerWidth - 4 + 'px';
-
-		var backD = document.getElementById('backG');
-		backD.setAttribute('height', window.innerHeight + 'px');
-		backD.setAttribute('width', window.innerWidth + 'px');
-//		enable_drop(svgD , json);
-//	});
-
-	//window.Springy = Springy;
-	//damas.getUser();
-	//var roots = JSON.parse( damas.read( damas.utils.command( { cmd: 'roots' } ).text ));
-	
-	//alert(roots.length);
-	//document.body.appendChild(svg);
 	loadCss("scripts/graphViewer/graph_d3.css");
 	loadCss("scripts/assetViewer/assetOverlay.css");
-
-	//
-	// we ask server the root nodes to show
-	//
-	damas.utils.command_a( { cmd: 'roots' }, function(res){
-		damas.read(res.text, function(nodes){
-
-			for(i=0;i<nodes.length;i++)
-			{
-				var n = nodes[i];
-				//console.log(n);
-				//springy_graph.newNode(n);
-			}
-		});
+	damas.server = '/damas/server';
+	var graph = document.createElement('div');
+	graph.setAttribute('id', 'graph');
+	document.body.appendChild(graph);
+	damasGraph.init( graph );
+	window.damasGraph = damasGraph;
+	//damasGraph.load( "scripts/graphViewer/bigbuckbunny_characters.json" );
+	//var roots = JSON.parse( damas.read( damas.utils.command( { cmd: 'roots' } ).text ));
+	damas.utils.command_a( { cmd: 'graph', id: 306 }, function(res){
+		var data = JSON.parse( res.text );
+		var hash_lookup = [];
+		for(i=0;i<data['nodes'].length;i++)
+		{
+			var n = data['nodes'][i];
+			damasGraph.newNode(n);
+			hash_lookup[n.id] = n;
+		}
+		for(i=0;i<data['links'].length;i++)
+		{
+			var l = data['links'][i];
+			damasGraph.newEdge( { source: hash_lookup[l.src_id], target: hash_lookup[l.tgt_id] } );
+		}
+		damasGraph.restart();
 	});
 });
 

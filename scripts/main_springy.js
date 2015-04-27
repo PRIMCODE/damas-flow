@@ -47,6 +47,7 @@ loadCss('scripts/graphViewer/graph.css');
 	//
 	// we ask server the root nodes to show
 	//
+/*
 	damas.utils.command_a( { cmd: 'roots' }, function(res){
 		damas.utils.command_a( { cmd: 'read', id: JSON.parse(res.text).join(','), depth: '1', flags: '4' }, function(res){
 			var nodes = JSON.parse( res.text );
@@ -58,6 +59,46 @@ loadCss('scripts/graphViewer/graph.css');
 			}
 		});
 	});
+
+	damas.utils.command_a( { cmd: 'read', id: 306, depth: '1', flags: '4' }, function(res){
+		var nodes = JSON.parse( res.text );
+		for(i=0;i<nodes.length;i++)
+		{
+			var n = nodes[i];
+			//springy_graph.newNode(n);
+			damasGraph.newNode(n);
+		}
+	});
+*/
+
+	damas.utils.command_a( { cmd: 'graph', id: 306 }, function(res){
+		//damas.utils.command_a( { cmd: 'read', id: JSON.parse(res.text).join(','), depth: '1', flags: '4' }, function(res){
+			var data = JSON.parse( res.text );
+/*
+			for(i=0;i<nodes.length;i++)
+			{
+				var n = nodes[i];
+				//springy_graph.newNode(n);
+				damasGraph.newNode(n);
+			}
+*/
+                                       for(i=0;i<data['nodes'].length;i++)
+                                        {
+                                                var n = data['nodes'][i];
+                                                damasGraph.newNode(n);
+                                        }
+                                        for(i=0;i<data['links'].length;i++)
+                                        {
+                                                var l = data['links'][i];
+                                                damasGraph.newEdge( l['tgt_id'], l['src_id']);
+                                        }
+
+
+		//});
+
+
+	});
+
 	loadCss("scripts/assetViewer/assetOverlay.css");
 });
 
