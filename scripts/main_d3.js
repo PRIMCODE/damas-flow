@@ -9,14 +9,14 @@ require.config({
 		'd3': 'graphViewer/d3',
 		'graph-common': "graphViewer/graph_common",
 		'graph': 'graphViewer/graph_d3',
-		'interactions': "graphViewer/interactions",
+		'interactions': "interactions",
 		'ao': "assetViewer/assetOverlay",
 		'av': "assetViewer/assetViewerSelector"
 	}
 });
 
 
-require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], function(p, damas, d3, damasGraph, interac){
+require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], function(p, damas, d3, damasGraph, interactions){
 	loadCss("scripts/graphViewer/graph_d3.css");
 	loadCss("scripts/assetViewer/assetOverlay.css");
 	damas.server = '/damas/server';
@@ -25,23 +25,21 @@ require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], func
 	document.body.appendChild(graph);
 	damasGraph.init( graph );
 	window.damasGraph = damasGraph;
+	enable_drop(damasGraph.svg, damasGraph);
 	//damasGraph.load( "scripts/graphViewer/bigbuckbunny_characters.json" );
 	//var roots = JSON.parse( damas.read( damas.utils.command( { cmd: 'roots' } ).text ));
 	damas.utils.command_a( { cmd: 'graph', id: 306 }, function(res){
 		var data = JSON.parse( res.text );
-		var hash_lookup = [];
 		for(i=0;i<data['nodes'].length;i++)
 		{
 			var n = data['nodes'][i];
 			damasGraph.newNode(n);
-			hash_lookup[n.id] = n;
 		}
 		for(i=0;i<data['links'].length;i++)
 		{
 			var l = data['links'][i];
-			damasGraph.newEdge( { source: hash_lookup[l.src_id], target: hash_lookup[l.tgt_id] } );
+			damasGraph.newEdge( l );
 		}
-		damasGraph.restart();
 	});
 });
 
