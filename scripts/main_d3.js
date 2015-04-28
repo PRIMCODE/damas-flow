@@ -26,7 +26,8 @@ require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], func
 	damasGraph.init( graph );
 	window.damasGraph = damasGraph;
 	enable_drop(damasGraph.svg, damasGraph);
-	//damasGraph.load( "scripts/graphViewer/bigbuckbunny_characters.json" );
+	damasGraph.load( "scripts/graphViewer/bigbuckbunny_characters.json" );
+	return;
 	//var roots = JSON.parse( damas.read( damas.utils.command( { cmd: 'roots' } ).text ));
 	damas.utils.command_a( { cmd: 'graph', id: 306 }, function(res){
 		var data = JSON.parse( res.text );
