@@ -15,40 +15,17 @@ require.config({
 		'av': "assetViewer/assetViewerSelector"
 	}
 });
-		//'': "scripts/assetViewer/assetOverlay.css"
 
-//require(["prototype", "damas", "graph", "springy", "svg-pan-zoom","damas-graph", "ao", "av" ], function(p, damas, graph, Springy, svgPanZoom){
-//require(["prototype", "damas", "damasGraph", "graph-client", "ao", "av" ], function(p, damas, damasGraph){
 require(["prototype", "damas", "damasGraph", "graph-client", "ao", "av", "interactions" ], function(p, damas, damasGraph){
-	//window.damas = damas;
 	damas.server = '/damas/server';
 	window.damas = damas;
-
-
-loadCss('scripts/graphViewer/graph.css');
-
+	loadCss('scripts/graphViewer/graph.css');
 	damasGraph.init(document.body);
-	//window.Springy = Springy;
 	window.damasGraph = damasGraph;
 	enable_drop( damasGraph.svg, damasGraph);
 	enable_keyboard( damasGraph.svg);
-
 	//damas.getUser();
-
-	//window.svg = damassvggraph.getSVG();
-	//document.body.appendChild(svg);
 	damasGraph.svg.style.height = window.innerHeight + 'px';
-	//springy_graph = new Springy.Graph();
-	//var springy_layout = new Springy.Layout.ForceDirected(springy_graph, 300.0, 300.0, 0.5);
-	//window.svgpanzoomoinstance = svgPanZoom('#svggraph' );
-
-	//springy_damas.currentBB = springy_layout.getBoundingBox();
-	//var springy_renderer = springy_damas.get_renderer( springy_layout );
-	//springy_renderer.start();
-
-	//
-	// we ask server the root nodes to show
-	//
 /*
 	damas.utils.command_a( { cmd: 'roots' }, function(res){
 		damas.utils.command_a( { cmd: 'read', id: JSON.parse(res.text).join(','), depth: '1', flags: '4' }, function(res){
@@ -56,23 +33,11 @@ loadCss('scripts/graphViewer/graph.css');
 			for(i=0;i<nodes.length;i++)
 			{
 				var n = nodes[i];
-				//springy_graph.newNode(n);
 				damasGraph.newNode(n);
 			}
 		});
 	});
-
-	damas.utils.command_a( { cmd: 'read', id: 306, depth: '1', flags: '4' }, function(res){
-		var nodes = JSON.parse( res.text );
-		for(i=0;i<nodes.length;i++)
-		{
-			var n = nodes[i];
-			//springy_graph.newNode(n);
-			damasGraph.newNode(n);
-		}
-	});
 */
-
 	damas.utils.command_a( { cmd: 'graph', id: 306 }, function(res){
 		damasGraph.load(JSON.parse( res.text ));
 	});
