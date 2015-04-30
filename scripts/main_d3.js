@@ -13,7 +13,6 @@ require.config({
 		'interactions': "interactions",
 		'ao': "assetViewer/assetOverlay",
 		'av': "assetViewer/assetViewerSelector"
-//		'af': "assetViewer/assetFunctions"
 	},
 	urlArgs: "v=" +  (new Date()).getTime()
 });
@@ -22,6 +21,7 @@ require.config({
 require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av"], function(p, damas, d3, damasGraph, interactions){
 	loadCss("scripts/graphViewer/graph_d3.css");
 	loadCss("scripts/assetViewer/assetOverlay.css");
+	assetsURL = '/projects';
 	window.damas = damas;
 //	damas.server = '/damas/server';
 	damas.server = '../server';
