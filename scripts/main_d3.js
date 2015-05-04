@@ -25,6 +25,8 @@ require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av"], funct
 	window.damas = damas;
 //	damas.server = '/damas/server';
 	damas.server = '../server';
+//	alert(moment().format('dddd, MMMM Do YYYY, h:mm:ss a'));
+//	moment().format();
 	var graph = document.createElement('div');
 	graph.setAttribute('id', 'graph');
 	document.body.appendChild(graph);
