@@ -14,15 +14,67 @@
 
 function enable_keyboard( svg ) {
 	//svg.setAttribute('onkeypress', 'keypress(e)');
-
 	window.addEventListener('keypress', keypress );
+	window.addEventListener('keydown', keydown );
+	window.addEventListener('keyup', keyup );
+}
+
+function node_pressed(e){
+	if(e.shiftKey)
+	{
+		damasGraph.selection.push( this );
+		e.target.classList.toggle('selected');
+		e.preventDefault();
+		return false;
+	}
+	if(e.ctrlKey)
+	{
+		damas_open(this.data.id);
+		e.preventDefault();
+		return false;
+	}
+	if(window['assetOverlay']){
+		assetOverlay(this.data);
+	}
+}
+
+
+function keydown(e){
+	if (e.shiftKey)
+	//if (window.event.shiftKey)
+	{
+		damasGraph.svg.style.cursor = 'crosshair';
+	}
+}
+
+function keyup(e){
+	damasGraph.svg.style.cursor = '';
 }
 
 function keypress(e){
 	var unicode=e.keyCode? e.keyCode : e.charCode;
 	console.log(unicode);
-	if(unicode === 48){
-		//document.documentElement.setCurrentTime(0);
+	if(unicode === 46){ // Delete
+		// REMOVE SELECTION (from local graph only, this is not a deletion in remote database)
+		//for(node in damasGraph.selection)
+		for(var i=0; i< damasGraph.selection.length;i++)
+		{
+			var node = damasGraph.selection[i];
+			console.log(node);
+			damasGraph.removeNode(node);
+		}
+		return;
+	}
+	if(unicode === 48){ // 0
+		return;
+	}
+	if(unicode === 97){ // a
+		// SELECT ALL
+		for(node in damasGraph.springy_graph.nodes)
+		{
+			damasGraph.selection.push(node);
+			node.shape.classList.toggle('selected');
+		}
 		return;
 	}
 	if(unicode === 101){ // e
@@ -32,13 +84,27 @@ function keypress(e){
 		}
 		return;
 	}
+	if(unicode === 102){ // f
+		// FOCUS SELECTION
+		return;
+	}
 	if(unicode === 104){ // h
+		// SHOW HELP PANEL
 		return;
 	}
 	if(unicode === 109){ // m
 		return;
 	}
 	if(unicode === 116){ // t
+		return;
+	}
+	if(unicode === 99){ // c
+		// CREATE NODE
+		var keys = prompt('keys', '{"label":"test"}');
+		damas.create_rest(JSON.parse(keys), function(node){
+			console.log(node);
+			damasGraph.newNode(node);
+		});
 		return;
 	}
 
@@ -105,7 +171,18 @@ damasflow_ondrop = function ( e )
 	}
 	*/
 
-	var path = e.dataTransfer.getData('text/x-moz-url');
+	var path;
+	if (keys['text/x-moz-url'])
+		path = keys['text/x-moz-url'];
+	if (keys['text/plain'])
+		path = keys['text/plain'];
+
+/*
+	var path = e.dataTransfer.getData('text/x-moz-url') |
+		e.dataTransfer.getData('text/plain'); // from sftp (gftp)
+*/
+
+	console.log(path);
 
 	if (path.indexOf('file://') === 0)
 	{
@@ -113,11 +190,18 @@ damasflow_ondrop = function ( e )
 		var path = path.replace('file:///home/damas/files', '');
 		var path = path.replace('file://', '');
 
-		damas.search({file: "='"+path +"'"}, null, null, null, function(res){
+		//damas.search({file: "='"+path +"'"}, null, null, null, function(res){
+		damas.search_rest('file:'+path, function(res){
 			if(res.length>0)
 			{
+/*
 				damas.utils.command_a( {cmd: 'graph', id: res[0] }, function(res){
 					damasGraph.load( JSON.parse( res.text ));
+				});
+*/
+				damas.get_rest( 'graph/'+res[0], function(res){
+					damasGraph.load( res);
+					//damasGraph.load( JSON.parse( res ));
 				});
 			}
 			else
@@ -127,7 +211,7 @@ damasflow_ondrop = function ( e )
 					console.log(e.dataTransfer);
 					console.log(path);
 					//damas.create_rest({ file: path }, function(node){
-					damas.create({ file: path }, function(node){
+					damas.create_rest({ file: path }, function(node){
 						damasGraph.newNode(node);
 					});
 				}
@@ -160,5 +244,31 @@ damasflow_ondrop = function ( e )
 			//graph.newNode({keys:{}, 'label': e.dataTransfer.getData('Text')});
 			//nodes[elem.id].damelem = elem;
 		//}
+		return;
 	}
+	if (path)
+	{
+		damas.search({file: "='"+path +"'"}, null, null, null, function(res){
+			if(res.length>0)
+			{
+				damas.utils.command_a( {cmd: 'graph', id: res[0] }, function(res){
+					damasGraph.load( JSON.parse( res.text ));
+				});
+			}
+			else
+			{
+				if( confirm('Add ' + path + '?'))
+				{
+					console.log(e.dataTransfer);
+					console.log(path);
+					//damas.create_rest({ file: path }, function(node){
+					damas.create({ file: path }, function(node){
+						damasGraph.newNode(node);
+					});
+				}
+			}
+		});
+		return;
+	}
+
 }
