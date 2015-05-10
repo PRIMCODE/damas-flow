@@ -9,7 +9,7 @@
 			}
 		};
 		httpRequest.open('GET', path);
-		httpRequest.send(); 
+		httpRequest.send();
 	}
 
 function enable_keyboard( svg ) {
@@ -22,8 +22,9 @@ function enable_keyboard( svg ) {
 function node_pressed(e){
 	if(e.shiftKey)
 	{
-		damasGraph.selection.push( this );
-		e.target.classList.toggle('selected');
+		damasGraph.selectToggle( this );
+		//damasGraph.selection.push( this );
+		//e.target.classList.toggle('selected');
 		e.preventDefault();
 		return false;
 	}
@@ -37,7 +38,6 @@ function node_pressed(e){
 		assetOverlay(this.data);
 	}
 }
-
 
 function keydown(e){
 	if (e.shiftKey)
@@ -90,6 +90,19 @@ function keypress(e){
 	}
 	if(unicode === 104){ // h
 		// SHOW HELP PANEL
+		return;
+	}
+	if(unicode === 108){ // l
+		if(damasGraph.selection[0] && damasGraph.selection[1])
+		{
+			damas.create_rest({
+				src_id: damasGraph.selection[0].data._id,
+				tgt_id: damasGraph.selection[1].data._id }, function(node){
+					damasGraph.newEdge(node);
+			});
+			return;
+		}
+		alert('Please select 2 nodes to link');
 		return;
 	}
 	if(unicode === 109){ // m
@@ -248,11 +261,11 @@ damasflow_ondrop = function ( e )
 	}
 	if (path)
 	{
-		damas.search({file: "='"+path +"'"}, null, null, null, function(res){
+		damas.search_rest('file:'+path, function(res){
 			if(res.length>0)
 			{
-				damas.utils.command_a( {cmd: 'graph', id: res[0] }, function(res){
-					damasGraph.load( JSON.parse( res.text ));
+				damas.get_rest( 'graph/'+res[0], function(res){
+					damasGraph.load( res);
 				});
 			}
 			else
@@ -261,8 +274,8 @@ damasflow_ondrop = function ( e )
 				{
 					console.log(e.dataTransfer);
 					console.log(path);
-					//damas.create_rest({ file: path }, function(node){
-					damas.create({ file: path }, function(node){
+					//damas.create({ file: path }, function(node){
+					damas.create_rest({ file: path }, function(node){
 						damasGraph.newNode(node);
 					});
 				}

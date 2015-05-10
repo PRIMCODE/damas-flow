@@ -5,10 +5,10 @@ require.config({
 	paths: {
 		'prototype': "https://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype",
 		'damas': "damas",
-		'svg-pan-zoom': 'graphViewer/vendor/svg-pan-zoom',
-		'graph-common': "graphViewer/graph_common",
-		'damasGraph': "graphViewer/graph-springy",
-		'springy': "graphViewer/vendor/springy",
+		'springy': 	"graphViewer/vendor/springy",
+		'svg-pan-zoom':	"graphViewer/vendor/svg-pan-zoom",
+		'graph-common': "graphViewer/graph-common",
+		'damasGraph':	"graphViewer/graph-springy",
 		'interactions': "interactions",
 		'graph-client': "graph-client",
 		'ao': "assetViewer/assetOverlay",
@@ -22,7 +22,8 @@ require(["prototype", "damas", "damasGraph", "graph-client", "ao", "av", "intera
 	//damas.server = '/damas/server';
 	damas.server = '/';
 	window.damas = damas;
-	loadCss('scripts/graphViewer/graph.css');
+	loadCss('scripts/graphViewer/graph-common.css');
+	loadCss("scripts/assetViewer/assetOverlay.css");
 	damasGraph.init(document.body);
 	damasGraph.selection = [];
 	window.damasGraph = damasGraph;
@@ -67,7 +68,6 @@ require(["prototype", "damas", "damasGraph", "graph-client", "ao", "av", "intera
 
 
 
-	loadCss("scripts/assetViewer/assetOverlay.css");
 });
 
 function loadCss(url) {
