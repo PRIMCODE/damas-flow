@@ -5,9 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
 require.config({
 	paths: {
 		'prototype': "https://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype",
-//		'damas': "damas",
-		'damas': "../../js/damas",
-		'd3': 'graphViewer/d3',
+		'damas': "damas",
+		'd3': 'graphViewer/vendor/d3',
 		'graph-common': "graphViewer/graph-common",
 		'graph': 'graphViewer/graph-d3',
 		'interactions': "interactions",
@@ -20,7 +19,7 @@ require.config({
 
 
 require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av"], function(p, damas, d3, damasGraph, interactions){
-	loadCss("scripts/graphViewer/graph_d3.css");
+	loadCss("scripts/graphViewer/graph-d3.css");
 	loadCss("scripts/assetViewer/assetOverlay.css");
 	assetsURL = '/projects';
 	window.damas = damas;
