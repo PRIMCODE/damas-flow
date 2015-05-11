@@ -12,15 +12,18 @@ require.config({
 		'interactions': "interactions",
 		'ao': "assetViewer/assetOverlay",
 		'av': "assetViewer/assetViewerSelector"
-	}
+	},
+	urlArgs: "v=" +  (new Date()).getTime()
 });
 
 
 require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], function(p, damas, d3, damasGraph, interactions){
-	loadCss("scripts/graphViewer/graph_d3.css");
+	loadCss("scripts/graphViewer/graph-d3.css");
+	loadCss("scripts/graphViewer/graph-common.css");
 	loadCss("scripts/assetViewer/assetOverlay.css");
 	window.damas = damas;
-	damas.server = '/damas/server';
+	//damas.server = '/damas/server';
+	damas.server = '/';
 	var graph = document.createElement('div');
 	graph.setAttribute('id', 'graph');
 	document.body.appendChild(graph);
@@ -29,6 +32,7 @@ require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], func
 	enable_drop(damasGraph.svg, damasGraph);
 	//damasGraph.load( "scripts/graphViewer/bigbuckbunny_characters.json" );
 	//var roots = JSON.parse( damas.read( damas.utils.command( { cmd: 'roots' } ).text ));
+/*
 	damas.utils.command_a( { cmd: 'graph', id: 306 }, function(res){
 		var data = JSON.parse( res.text );
 		for(i=0;i<data['nodes'].length;i++)
@@ -42,6 +46,7 @@ require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], func
 			damasGraph.newEdge( l );
 		}
 	});
+*/
 });
 
 function loadCss(url) {
