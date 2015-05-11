@@ -6,7 +6,7 @@ require.config({
 	paths: {
 		'prototype': "https://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype",
 		'damas': "damas",
-		'd3': 'graphViewer/d3',
+		'd3': 'graphViewer/vendor/d3',
 		'graph-common': "graphViewer/graph-common",
 		'graph': 'graphViewer/graph-d3',
 		'interactions': "interactions",
