@@ -24,12 +24,15 @@ require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], func
 	window.damas = damas;
 	//damas.server = '/damas/server';
 	damas.server = '/';
-	var graph = document.createElement('div');
-	graph.setAttribute('id', 'graph');
-	document.body.appendChild(graph);
-	damasGraph.init( graph );
-	window.damasGraph = damasGraph;
-	enable_drop(damasGraph.svg, damasGraph);
+
+	var graphDiv = document.createElement('div');
+	graphDiv.setAttribute('id', 'graph');
+	document.body.appendChild(graphDiv);
+	
+	var graph = new damasGraph( graphDiv );
+	window.graph = graph;
+	enable_drop(graph.svg, graph);
+
 	//damasGraph.load( "scripts/graphViewer/bigbuckbunny_characters.json" );
 	//var roots = JSON.parse( damas.read( damas.utils.command( { cmd: 'roots' } ).text ));
 /*

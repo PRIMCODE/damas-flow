@@ -22,8 +22,8 @@ function enable_keyboard( svg ) {
 function node_pressed(e){
 	if(e.shiftKey)
 	{
-		damasGraph.selectToggle( this );
-		//damasGraph.selection.push( this );
+		graph.selectToggle( this );
+		//graph.selection.push( this );
 		//e.target.classList.toggle('selected');
 		e.preventDefault();
 		return false;
@@ -43,12 +43,12 @@ function keydown(e){
 	if (e.shiftKey)
 	//if (window.event.shiftKey)
 	{
-		damasGraph.svg.style.cursor = 'crosshair';
+		graph.svg.style.cursor = 'crosshair';
 	}
 }
 
 function keyup(e){
-	damasGraph.svg.style.cursor = '';
+	graph.svg.style.cursor = '';
 }
 
 function keypress(e){
@@ -56,12 +56,12 @@ function keypress(e){
 	console.log(unicode);
 	if(unicode === 46){ // Delete
 		// REMOVE SELECTION (from local graph only, this is not a deletion in remote database)
-		//for(node in damasGraph.selection)
-		for(var i=0; i< damasGraph.selection.length;i++)
+		//for(node in graph.selection)
+		for(var i=0; i< graph.selection.length;i++)
 		{
-			var node = damasGraph.selection[i];
+			var node = graph.selection[i];
 			console.log(node);
-			damasGraph.removeNode(node);
+			graph.removeNode(node);
 		}
 		return;
 	}
@@ -70,9 +70,9 @@ function keypress(e){
 	}
 	if(unicode === 97){ // a
 		// SELECT ALL
-		for(node in damasGraph.springy_graph.nodes)
+		for(node in graph.springy_graph.nodes)
 		{
-			damasGraph.selection.push(node);
+			graph.selection.push(node);
 			node.shape.classList.toggle('selected');
 		}
 		return;
@@ -80,7 +80,7 @@ function keypress(e){
 	if(unicode === 101){ // e
 		if( confirm('Erase graph?') )
 		{
-			damasGraph.erase();
+			graph.erase();
 		}
 		return;
 	}
@@ -93,12 +93,12 @@ function keypress(e){
 		return;
 	}
 	if(unicode === 108){ // l
-		if(damasGraph.selection[0] && damasGraph.selection[1])
+		if(graph.selection[0] && graph.selection[1])
 		{
 			damas.create_rest({
-				src_id: damasGraph.selection[0].data._id,
-				tgt_id: damasGraph.selection[1].data._id }, function(node){
-					damasGraph.newEdge(node);
+				src_id: graph.selection[0].data._id,
+				tgt_id: graph.selection[1].data._id }, function(node){
+					graph.newEdge(node);
 			});
 			return;
 		}
@@ -116,7 +116,7 @@ function keypress(e){
 		var keys = prompt('keys', '{"label":"test"}');
 		damas.create_rest(JSON.parse(keys), function(node){
 			console.log(node);
-			damasGraph.newNode(node);
+			graph.newNode(node);
 		});
 		return;
 	}
@@ -196,6 +196,12 @@ damasflow_ondrop = function ( e )
 */
 
 	console.log(path);
+	if(!path)
+	{
+		alert('Could not determine the path for the file ' + e.dataTransfer.files[0].name +': Drop aborted' );
+		return;
+	}
+	
 
 	if (path.indexOf('file://') === 0)
 	{
@@ -209,12 +215,12 @@ damasflow_ondrop = function ( e )
 			{
 /*
 				damas.utils.command_a( {cmd: 'graph', id: res[0] }, function(res){
-					damasGraph.load( JSON.parse( res.text ));
+					graph.load( JSON.parse( res.text ));
 				});
 */
 				damas.get_rest( 'graph/'+res[0], function(res){
-					damasGraph.load( res);
-					//damasGraph.load( JSON.parse( res ));
+					graph.load( res);
+					//graph.load( JSON.parse( res ));
 				});
 			}
 			else
@@ -225,7 +231,7 @@ damasflow_ondrop = function ( e )
 					console.log(path);
 					//damas.create_rest({ file: path }, function(node){
 					damas.create_rest({ file: path }, function(node){
-						damasGraph.newNode(node);
+						graph.newNode(node);
 					});
 				}
 			}
@@ -244,7 +250,7 @@ damasflow_ondrop = function ( e )
 			console.log('Dropped node #' +id);
 			//var elem = damas.read_rest(parseInt(id));
 			damas.utils.command_a( {cmd: 'graph', id: id }, function(res){
-				damasGraph.load( JSON.parse( res.text ));
+				graph.load( JSON.parse( res.text ));
 			});
 		}
 		//else
@@ -265,7 +271,7 @@ damasflow_ondrop = function ( e )
 			if(res.length>0)
 			{
 				damas.get_rest( 'graph/'+res[0], function(res){
-					damasGraph.load( res);
+					graph.load( res);
 				});
 			}
 			else
@@ -276,7 +282,7 @@ damasflow_ondrop = function ( e )
 					console.log(path);
 					//damas.create({ file: path }, function(node){
 					damas.create_rest({ file: path }, function(node){
-						damasGraph.newNode(node);
+						graph.newNode(node);
 					});
 				}
 			}
