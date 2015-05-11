@@ -5,28 +5,34 @@ require.config({
 	paths: {
 		'prototype': "https://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype",
 		'damas': "damas",
-		'svg-pan-zoom': 'graphViewer/svg-pan-zoom',
-		'graph-common': "graphViewer/graph_common",
-		'damasGraph': "graphViewer/graph",
-		'springy': "graphViewer/springy",
+		'springy': 	"graphViewer/vendor/springy",
+		'svg-pan-zoom':	"graphViewer/vendor/svg-pan-zoom",
+		'graph-common': "graphViewer/graph-common",
+		'damasGraph':	"graphViewer/graph-springy",
 		'interactions': "interactions",
 		'graph-client': "graph-client",
 		'ao': "assetViewer/assetOverlay",
 		'av': "assetViewer/assetViewerSelector"
-	}
+	},
+	urlArgs: "v=" +  (new Date()).getTime()
 });
 
 require(["prototype", "damas", "damasGraph", "graph-client", "ao", "av", "interactions" ], function(p, damas, damasGraph){
-	damas.server = '/damas/server';
+	// PHP
+	//damas.server = '/damas/server';
+	damas.server = '/';
 	window.damas = damas;
-	loadCss('scripts/graphViewer/graph.css');
+	loadCss('scripts/graphViewer/graph-common.css');
+	loadCss("scripts/assetViewer/assetOverlay.css");
 	damasGraph.init(document.body);
+	damasGraph.selection = [];
 	window.damasGraph = damasGraph;
 	enable_drop( damasGraph.svg, damasGraph);
 	enable_keyboard( damasGraph.svg);
 	//damas.getUser();
 	damasGraph.svg.style.height = window.innerHeight + 'px';
 /*
+	// roots PHP
 	damas.utils.command_a( { cmd: 'roots' }, function(res){
 		damas.utils.command_a( { cmd: 'read', id: JSON.parse(res.text).join(','), depth: '1', flags: '4' }, function(res){
 			var nodes = JSON.parse( res.text );
@@ -38,10 +44,30 @@ require(["prototype", "damas", "damasGraph", "graph-client", "ao", "av", "intera
 		});
 	});
 */
+
+	// graph PHP
 	damas.utils.command_a( { cmd: 'graph', id: 306 }, function(res){
 		damasGraph.load(JSON.parse( res.text ));
 	});
-	loadCss("scripts/assetViewer/assetOverlay.css");
+
+	// graph NODEJS
+/*
+	var req = new XMLHttpRequest();
+	req.open('GET', damas.server + '/graph/306', true);
+	req.onreadystatechange = function(e){
+		if(req.readyState == 4)
+		{
+			if(req.status == 200)
+			{
+				damasGraph.load( JSON.parse(req.responseText));
+			}
+		}
+	}
+	req.send();
+*/
+
+
+
 });
 
 function loadCss(url) {
