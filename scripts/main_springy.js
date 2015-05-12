@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 require.config({
 	paths: {
-		'prototype': "https://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype",
+		'prototype': "vendor/prototype",
 		'damas': "damas",
 		'springy': 	"graphViewer/vendor/springy",
 		'svg-pan-zoom':	"graphViewer/vendor/svg-pan-zoom",
@@ -24,13 +24,14 @@ require(["prototype", "damas", "damasGraph", "graph-client", "ao", "av", "intera
 	window.damas = damas;
 	loadCss('scripts/graphViewer/graph-common.css');
 	loadCss("scripts/assetViewer/assetOverlay.css");
-	damasGraph.init(document.body);
-	damasGraph.selection = [];
-	window.damasGraph = damasGraph;
-	enable_drop( damasGraph.svg, damasGraph);
-	enable_keyboard( damasGraph.svg);
+		
+	var graph = new damasGraph( document.body );
+	window.graph = graph;
+
+	enable_drop( graph.svg, graph);
+	enable_keyboard( graph.svg);
 	//damas.getUser();
-	damasGraph.svg.style.height = window.innerHeight + 'px';
+	graph.svg.style.height = window.innerHeight + 'px';
 /*
 	// roots PHP
 	damas.utils.command_a( { cmd: 'roots' }, function(res){
@@ -47,7 +48,7 @@ require(["prototype", "damas", "damasGraph", "graph-client", "ao", "av", "intera
 
 	// graph PHP
 	damas.utils.command_a( { cmd: 'graph', id: 306 }, function(res){
-		damasGraph.load(JSON.parse( res.text ));
+		graph.load(JSON.parse( res.text ));
 	});
 
 	// graph NODEJS
