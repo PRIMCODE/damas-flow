@@ -120,7 +120,31 @@ function keypress(e){
 		});
 		return;
 	}
-
+	if(unicode === 119){ // w
+		// ADD WORKDIR
+		var workdir = prompt('New workdir', 'workdir');
+		if(workdir)
+			damas.utils.addWorkdirs(workdir);
+		return;
+	}
+	if(unicode === 120){ // x
+		// REMOVE WORKDIR
+		var wds=JSON.stringify(damas.utils.getWorkdirs()).replace(',','\r\n');
+		wds=wds.replace('[','');
+		wds=wds.replace(']','');
+		var workdir = prompt('Workdir to delete:\r\n'+wds, 'workdir');
+		if(workdir)
+			damas.utils.removeWorkdirs(workdir);
+		return;
+	}
+	if(unicode === 87){ // W
+		// LIST WORKDIRS
+		var wds=JSON.stringify(damas.utils.getWorkdirs()).replace(',','\r\n');
+		wds=wds.replace('[','');
+		wds=wds.replace(']','');
+		alert('Workdirs:\r\n'+wds);
+		return;
+	}
 }
 
 function enable_drop( svg, graph ) {
@@ -196,10 +220,15 @@ damasflow_ondrop = function ( e )
 
 	if (path.indexOf('file://') === 0)
 	{
-		// temporary absolute path for tests - path to local projects
-		var path = path.replace('file:///home/damas/files', '');
-		var path = path.replace('file://', '');
-
+		path = path.replace('file://', '');
+		var wd= JSON.parse(damas.get_rest( 'workdirs/'));
+		wd=wd.concat(damas.utils.getWorkdirs());
+		wd.sort(function(a, b){
+			return b.length - a.length;
+		});
+		console.log(wd);
+		for(w in wd)
+			path= path.replace(wd[w], '');
 		//damas.search({file: "='"+path +"'"}, null, null, null, function(res){
 		damas.search_rest('file:'+path, function(res){
 			if(res.length>0)
