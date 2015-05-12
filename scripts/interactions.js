@@ -146,6 +146,20 @@ function enable_drop( svg, graph ) {
 }
 
 
+/**
+ *
+ * Table for dropped files - is the absolute file path found and in which field
+ *
+ * OS    To        From    ok? Field
+ * ------------------------------------------
+ * Linux Iceweasel pcmanfm yes text/x-moz-url
+ * Linux Iceweasel gftp    yes text/x-moz-url
+ * Linux Chrome    pcmanfm no
+ * Linux Chrome    gftp    yes text/plain
+ *
+ *
+ */
+
 damasflow_ondrop = function ( e )
 {
 	//alert('COMING SOON :) Drop your assets and connect them, in this web page');
@@ -167,33 +181,11 @@ damasflow_ondrop = function ( e )
 	}
 	// END DEBUG
 
-	/*
-	var files = e.dataTransfer.files;
-	// DROP FILES
-	for(i=0;i<files.length;i++)
-	{
-		var file = files[i];
-		// DAMAS
-		//var elem = damas.create(file);
-		//elem.update({label: file.name });
-		//nodes[elem.id] = graph.newNode({'label': file.name});
-		//nodes[elem.id].damelem = elem;
-		//console.log(ev.dataTransfer);
-		graph.newNode({ keys: file, 'label': file.name});
-		//graph.newNode( file );
-	}
-	*/
-
 	var path;
 	if (keys['text/x-moz-url'])
 		path = keys['text/x-moz-url'];
 	if (keys['text/plain'])
 		path = keys['text/plain'];
-
-/*
-	var path = e.dataTransfer.getData('text/x-moz-url') |
-		e.dataTransfer.getData('text/plain'); // from sftp (gftp)
-*/
 
 	console.log(path);
 	if(!path)
@@ -201,7 +193,6 @@ damasflow_ondrop = function ( e )
 		alert('Could not determine the path for the file ' + e.dataTransfer.files[0].name +': Drop aborted' );
 		return;
 	}
-	
 
 	if (path.indexOf('file://') === 0)
 	{
