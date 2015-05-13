@@ -226,7 +226,6 @@ damasflow_ondrop = function ( e )
 		wd.sort(function(a, b){
 			return b.length - a.length;
 		});
-		console.log(wd);
 		for(w in wd)
 			path= path.replace(wd[w], '');
 		//damas.search({file: "='"+path +"'"}, null, null, null, function(res){
