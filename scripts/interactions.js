@@ -121,12 +121,13 @@ function keypress(e){
 		return;
 	}
 	if(unicode === 119){ // w
-		// ADD WORKDIR
-		var workdir = prompt('New workdir', 'workdir');
-		if(workdir)
-			damas.utils.addWorkdirs(workdir);
+		// EDIT WORKDIRS
+		var wds=(damas.utils.getWorkdirs());
+		wds = prompt('Edit workdir', wds);
+		if(wds)
+			localStorage['workdirs']=wds;
 		return;
-	}
+	}/*
 	if(unicode === 120){ // x
 		// REMOVE WORKDIR
 		var wds=(damas.utils.getWorkdirs()).replace(',','\r\n');
@@ -136,10 +137,10 @@ function keypress(e){
 		if(workdir)
 			damas.utils.removeWorkdirs(workdir);
 		return;
-	}
+	}*/
 	if(unicode === 87){ // W
 		// LIST WORKDIRS
-		var wds=(damas.utils.getWorkdirs()).replace(',','\r\n');
+		var wds=(damas.utils.getWorkdirs()).replace(/,/g,'\r\n');
 		wds=wds.replace('[','');
 		wds=wds.replace(']','');
 		alert('Workdirs:\r\n'+wds);
