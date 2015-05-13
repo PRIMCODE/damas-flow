@@ -129,7 +129,7 @@ function keypress(e){
 	}
 	if(unicode === 120){ // x
 		// REMOVE WORKDIR
-		var wds=JSON.stringify(damas.utils.getWorkdirs()).replace(',','\r\n');
+		var wds=(damas.utils.getWorkdirs()).replace(',','\r\n');
 		wds=wds.replace('[','');
 		wds=wds.replace(']','');
 		var workdir = prompt('Workdir to delete:\r\n'+wds, 'workdir');
@@ -139,7 +139,7 @@ function keypress(e){
 	}
 	if(unicode === 87){ // W
 		// LIST WORKDIRS
-		var wds=JSON.stringify(damas.utils.getWorkdirs()).replace(',','\r\n');
+		var wds=(damas.utils.getWorkdirs()).replace(',','\r\n');
 		wds=wds.replace('[','');
 		wds=wds.replace(']','');
 		alert('Workdirs:\r\n'+wds);
@@ -221,8 +221,8 @@ damasflow_ondrop = function ( e )
 	if (path.indexOf('file://') === 0)
 	{
 		path = path.replace('file://', '');
-		var wd= JSON.parse(damas.get_rest( 'workdirs/'));
-		wd=wd.concat(damas.utils.getWorkdirs());
+		var wd= (JSON.parse(damas.utils.loadConfJSON())).workdirs;
+		wd=wd.concat(JSON.parse(damas.utils.getWorkdirs()));
 		wd.sort(function(a, b){
 			return b.length - a.length;
 		});
