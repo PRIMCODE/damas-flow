@@ -1,6 +1,8 @@
 
 var wd= (JSON.parse(loadConfJSON())).workdirs;
 console.log(wd);
+if(!localStorage['workdirs'])
+	localStorage['workdirs']='[]';
 
 	function fetchJSONFile(path, callback) {
 		var httpRequest = new XMLHttpRequest();
