@@ -1,3 +1,7 @@
+
+var wd= (JSON.parse(loadConfJSON())).workdirs;
+console.log(wd);
+
 	function fetchJSONFile(path, callback) {
 		var httpRequest = new XMLHttpRequest();
 		httpRequest.onreadystatechange = function() {
@@ -120,7 +124,32 @@ function keypress(e){
 		});
 		return;
 	}
-
+	if(unicode === 119){ // w
+		// EDIT WORKDIRS
+		var wds=localStorage["workdirs"];
+		wds = prompt('Edit workdir', wds);
+		if(wds)
+			localStorage['workdirs']=wds;
+		return;
+	}/*
+	if(unicode === 120){ // x
+		// REMOVE WORKDIR
+		var wds=localStorage["workdirs"].replace(',','\r\n');
+		wds=wds.replace('[','');
+		wds=wds.replace(']','');
+		var workdir = prompt('Workdir to delete:\r\n'+wds, 'workdir');
+		if(workdir)
+			removeWorkdirs(workdir);
+		return;
+	}*/
+	if(unicode === 87){ // W
+		// LIST WORKDIRS
+		var wds=localStorage["workdirs"].replace(/,/g,'\r\n');
+		wds=wds.replace('[','');
+		wds=wds.replace(']','');
+		alert('Workdirs:\r\n'+wds);
+		return;
+	}
 }
 
 function enable_drop( svg, graph ) {
@@ -150,12 +179,14 @@ function enable_drop( svg, graph ) {
  *
  * Table for dropped files - is the absolute file path found and in which field
  *
- * OS    To        From    ok? Field
- * ------------------------------------------
- * Linux Iceweasel pcmanfm yes text/x-moz-url
- * Linux Iceweasel gftp    yes text/x-moz-url
- * Linux Chrome    pcmanfm no
- * Linux Chrome    gftp    yes text/plain
+ * OS        To        From     ok? Field
+ * ---------------------------------------------------
+ * Linux     Iceweasel pcmanfm  yes text/x-moz-url
+ * Linux     Iceweasel gftp     yes text/x-moz-url
+ * Linux     Chrome    pcmanfm  no
+ * Linux     Chrome    gftp     yes text/plain
+ * Windows   Firefox   Explorer yes text/x-moz-url
+ * Windows   Chrome    Explorer no
  *
  *
  */
@@ -196,10 +227,14 @@ damasflow_ondrop = function ( e )
 
 	if (path.indexOf('file://') === 0)
 	{
-		// temporary absolute path for tests - path to local projects
-		var path = path.replace('file:///home/damas/files', '');
-		var path = path.replace('file://', '');
-
+		path = path.replace('file://', '');
+		var workdir=wd.concat(JSON.parse(localStorage["workdirs"]));
+		workdir.sort(function(a, b){
+			return b.length - a.length;
+		});
+		console.log(workdir);
+		for(w in workdir)
+			path= path.replace(workdir[w], '');
 		//damas.search({file: "='"+path +"'"}, null, null, null, function(res){
 		damas.search_rest('file:'+path, function(res){
 			if(res.length>0)
@@ -220,7 +255,6 @@ damasflow_ondrop = function ( e )
 				{
 					console.log(e.dataTransfer);
 					console.log(path);
-					//damas.create_rest({ file: path }, function(node){
 					damas.create_rest({ file: path }, function(node){
 						graph.newNode(node);
 					});
@@ -281,4 +315,28 @@ damasflow_ondrop = function ( e )
 		return;
 	}
 
+}
+
+function removeWorkdirs(wd){
+	var workdirs=JSON.parse(localStorage["workdirs"]);
+	var index=workdirs.indexOf(wd);
+	if(workdirs[wd])
+		workdirs.splice(wd,1);
+	localStorage["workdirs"]=JSON.stringify(workdirs);
+	console.log(localStorage["workdirs"]);
+}
+
+function addWorkdirs(wd){
+	var workdirs=JSON.parse(localStorage["workdirs"]);
+	workdirs.push(wd);
+	localStorage["workdirs"]=JSON.stringify(workdirs);
+	console.log(localStorage["workdirs"]);
+}
+
+function loadConfJSON() {
+	var xobj = new XMLHttpRequest();
+			xobj.overrideMimeType("application/json");
+	xobj.open('GET', 'conf.json', false);
+	xobj.send(null);
+	return xobj.responseText;
 }
