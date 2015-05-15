@@ -80,6 +80,6 @@ function loadCss(url) {
 }
 
 window.addEventListener("resize", function() {
-	damasGraph.svg.style.height = window.innerHeight + 'px';
+	graph.svg.style.height = window.innerHeight + 'px';
 });
 
