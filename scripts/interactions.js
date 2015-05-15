@@ -134,17 +134,17 @@ function keypress(e){
 	}/*
 	if(unicode === 120){ // x
 		// REMOVE WORKDIR
-		var wds=(damas.utils.getWorkdirs()).replace(',','\r\n');
+		var wds=localStorage["workdirs"].replace(',','\r\n');
 		wds=wds.replace('[','');
 		wds=wds.replace(']','');
 		var workdir = prompt('Workdir to delete:\r\n'+wds, 'workdir');
 		if(workdir)
-			damas.utils.removeWorkdirs(workdir);
+			removeWorkdirs(workdir);
 		return;
 	}*/
 	if(unicode === 87){ // W
 		// LIST WORKDIRS
-		var wds=(getWorkdirs()).replace(/,/g,'\r\n');
+		var wds=localStorage["workdirs"].replace(/,/g,'\r\n');
 		wds=wds.replace('[','');
 		wds=wds.replace(']','');
 		alert('Workdirs:\r\n'+wds);
@@ -228,7 +228,7 @@ damasflow_ondrop = function ( e )
 	if (path.indexOf('file://') === 0)
 	{
 		path = path.replace('file://', '');
-		var workdir=wd.concat(JSON.parse(getWorkdirs()));
+		var workdir=wd.concat(JSON.parse(localStorage["workdirs"]));
 		workdir.sort(function(a, b){
 			return b.length - a.length;
 		});
@@ -315,11 +315,6 @@ damasflow_ondrop = function ( e )
 		return;
 	}
 
-}
-
-function getWorkdirs(){
-	var workdirs=localStorage["workdirs"];
-	return workdirs;
 }
 
 function removeWorkdirs(wd){
