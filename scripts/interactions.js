@@ -126,7 +126,7 @@ function keypress(e){
 	}
 	if(unicode === 119){ // w
 		// EDIT WORKDIRS
-		var wds=(getWorkdirs());
+		var wds=localStorage["workdirs"];
 		wds = prompt('Edit workdir', wds);
 		if(wds)
 			localStorage['workdirs']=wds;
