@@ -20,12 +20,13 @@ require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], func
 	loadCss("scripts/graphViewer/graph-d3.css");
 	loadCss("scripts/graphViewer/graph-common.css");
 	loadCss("scripts/assetViewer/assetOverlay.css");
-	assetsURL = '/projects';
+//	assetsURL = '/projects';
+	assetsURL = '';
 	window.damas = damas;
 
 //	damas.server = '/damas/server';
-	damas.server = '../server';
-//	damas.server = '/';
+//	damas.server = '../server';
+	damas.server = '/';
 	
 //	var graph = document.createElement('div');
 //	graph.setAttribute('id', 'graph');

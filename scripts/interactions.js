@@ -200,7 +200,7 @@ damasflow_ondrop = function ( e )
 		var path = path.replace('file:///home/damas/files', '');
 		var path = path.replace('file://', '');
 
-		//damas.search({file: "='"+path +"'"}, null, null, null, function(res){
+//		damas.search({file: "='"+path +"'"}, null, null, null, function(res){
 		damas.search_rest('file:'+path, function(res){
 			if(res.length>0)
 			{
