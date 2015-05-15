@@ -336,7 +336,7 @@ function addWorkdirs(wd){
 function loadConfJSON() {
 	var xobj = new XMLHttpRequest();
 			xobj.overrideMimeType("application/json");
-	xobj.open('GET', '/conf.json', false); // Replace 'my_data' with the path to your file
+	xobj.open('GET', 'conf.json', false);
 	xobj.send(null);
 	return xobj.responseText;
 }
