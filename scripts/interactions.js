@@ -146,10 +146,11 @@ function keypress(e){
 	}*/
 	if(unicode === 87){ // W
 		// LIST WORKDIRS
-		var wds=localStorage["workdirs"].replace(/,/g,'\r\n');
-		wds=wds.replace('[','');
-		wds=wds.replace(']','');
-		alert('Workdirs:\r\n'+wds);
+		var wds="Default Workdirs: \r\n"+(JSON.stringify(wd)).replace(/,/g,'\r\n')+"\r\nUser Workdirs:\r\n";
+		wds+=localStorage["workdirs"].replace(/,/g,'\r\n');
+		wds=wds.replace(/\[/g,'');
+		wds=wds.replace(/\]/g,'');
+		alert(wds);
 		return;
 	}
 }
