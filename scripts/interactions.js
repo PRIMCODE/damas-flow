@@ -29,19 +29,17 @@ function node_pressed(e){
 	if(e.shiftKey)
 	{
 		graph.selectToggle( this );
-		//graph.selection.push( this );
-		//e.target.classList.toggle('selected');
 		e.preventDefault();
 		return false;
 	}
 	if(e.ctrlKey)
 	{
-		damas_open(this.data.id);
+		damas_open(this._id);
 		e.preventDefault();
 		return false;
 	}
 	if(window['assetOverlay']){
-		assetOverlay(this.data);
+		assetOverlay(this);
 	}
 }
 
@@ -83,6 +81,17 @@ function keypress(e){
 		}
 		return;
 	}
+	if(unicode === 100){ // d
+		if (document.querySelector('#graphDebugFrame').style.display === 'none')
+		{
+			document.querySelector('#graphDebugFrame').style.display = 'block';
+		}
+		else
+		{
+			document.querySelector('#graphDebugFrame').style.display = 'none';
+		}
+		return;
+	}
 	if(unicode === 101){ // e
 		if( confirm('Erase graph?') )
 		{
@@ -102,8 +111,8 @@ function keypress(e){
 		if(graph.selection[0] && graph.selection[1])
 		{
 			damas.create_rest({
-				src_id: graph.selection[0].data._id,
-				tgt_id: graph.selection[1].data._id }, function(node){
+				src_id: graph.selection[0]._id,
+				tgt_id: graph.selection[1]._id }, function(node){
 					graph.newEdge(node);
 			});
 			return;
@@ -115,6 +124,7 @@ function keypress(e){
 		return;
 	}
 	if(unicode === 116){ // t
+		//TOGGLE TEXTS
 		return;
 	}
 	if(unicode === 99){ // c
@@ -133,8 +143,12 @@ function keypress(e){
 		if(wds)
 			localStorage['workdirs']=wds;
 		return;
-	}/*
+	}
 	if(unicode === 120){ // x
+		// EXPORT GRAPH
+		alert(JSON.stringify(graph.nodes.concat(graph.links)));
+	}
+	/*
 		// REMOVE WORKDIR
 		var wds=localStorage["workdirs"].replace(',','\r\n');
 		wds=wds.replace('[','');
@@ -143,7 +157,7 @@ function keypress(e){
 		if(workdir)
 			removeWorkdirs(workdir);
 		return;
-	}*/
+	*/
 	if(unicode === 87){ // W
 		// LIST WORKDIRS
 		var wds="Default Workdirs: \r\n"+(JSON.stringify(wd)).replace(/,/g,'\r\n')+"\r\nUser Workdirs:\r\n";
