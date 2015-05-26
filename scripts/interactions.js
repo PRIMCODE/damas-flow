@@ -105,6 +105,15 @@ function keypress(e){
 	}
 	if(unicode === 104){ // h
 		// SHOW HELP PANEL
+		var panel = document.querySelector('#graphHelpFrame');
+		if (panel.style.display === 'none')
+		{
+			panel.style.display = 'block';
+		}
+		else
+		{
+			panel.style.display = 'none';
+		}
 		return;
 	}
 	if(unicode === 108){ // l
