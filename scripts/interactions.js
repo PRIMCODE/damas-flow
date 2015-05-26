@@ -250,8 +250,8 @@ damasflow_ondrop = function ( e )
 			return b.length - a.length;
 		});
 		console.log(workdir);
-		for(w in workdir)
-			path= path.replace(workdir[w], '');
+		for(var w=0;w<workdir.length;w++)
+			path= path.replace(new RegExp("^"+workdir[w]), '');
 		//damas.search({file: "='"+path +"'"}, null, null, null, function(res){
 		damas.search_rest('file:'+path, function(res){
 			if(res.length>0)
