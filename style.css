@@ -2,7 +2,7 @@ body {
 	margin: 0;
 }
 
-div#graphDebugFrame {
+div#graphDebug {
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -23,7 +23,7 @@ div#graphHelpFrame {
 /*
 	pointer-events:none;
 */
-	background: url('help.svg') no-repeat top left;
+	background: url('cheatsheet.svg') no-repeat top left;
 	background-size: contain;
 	background-position: 50% 50%;
 	background-color: rgba(256, 256, 256, .8);

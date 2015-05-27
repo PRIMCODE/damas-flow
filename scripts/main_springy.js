@@ -32,7 +32,7 @@ require(["prototype", "damas", "damasGraph", "graph-client", "ao", "av", "intera
 	enable_drop( graph.svg, graph);
 	enable_keyboard( graph.svg);
 	//damas.getUser();
-	graph.svg.style.height = window.innerHeight + 'px';
+	graph.svg.style.height = window.innerHeight -3 + 'px';
 
 /*
 	// graph PHP
@@ -69,6 +69,6 @@ function loadCss(url) {
 }
 
 window.addEventListener("resize", function() {
-	graph.svg.style.height = window.innerHeight + 'px';
+	graph.svg.style.height = window.innerHeight -3 + 'px';
 });
 

@@ -82,13 +82,13 @@ function keypress(e){
 		return;
 	}
 	if(unicode === 100){ // d
-		if (document.querySelector('#graphDebugFrame').style.display === 'none')
+		if (document.querySelector('#graphDebug').style.display === 'none')
 		{
-			document.querySelector('#graphDebugFrame').style.display = 'block';
+			document.querySelector('#graphDebug').style.display = 'block';
 		}
 		else
 		{
-			document.querySelector('#graphDebugFrame').style.display = 'none';
+			document.querySelector('#graphDebug').style.display = 'none';
 		}
 		return;
 	}
@@ -133,6 +133,7 @@ function keypress(e){
 		return;
 	}
 	if(unicode === 116){ // t
+		graph.svg.querySelector('g.texts').classList.toggle('hidden');
 		//TOGGLE TEXTS
 		return;
 	}
@@ -155,7 +156,8 @@ function keypress(e){
 	}
 	if(unicode === 120){ // x
 		// EXPORT GRAPH
-		alert(JSON.stringify(graph.nodes.concat(graph.links)));
+		alert('The graph has been copied to the console.log');
+		console.log(JSON.stringify(graph.nodes.concat(graph.links)));
 	}
 	/*
 		// REMOVE WORKDIR
