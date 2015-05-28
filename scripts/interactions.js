@@ -59,14 +59,19 @@ function keypress(e){
 	var unicode=e.keyCode? e.keyCode : e.charCode;
 	console.log(unicode);
 	if(unicode === 46){ // Delete
-		// REMOVE SELECTION (from local graph only, this is not a deletion in remote database)
-		//for(node in graph.selection)
-		for(var i=0; i< graph.selection.length;i++)
+		if(graph.selection.length > 0)
 		{
-			var node = graph.selection[i];
-			console.log(node);
-			graph.removeNode(node);
+			// REMOVE SELECTION (from local graph only, this is not a deletion in remote database)
+			//for(node in graph.selection)
+			for(var i=0; i< graph.selection.length;i++)
+			{
+				var node = graph.selection[i];
+				console.log(node);
+				graph.removeNode(node);
+			}
+			return;
 		}
+		alert('Please select a node or link to delete');
 		return;
 	}
 	if(unicode === 48){ // 0
@@ -124,6 +129,8 @@ function keypress(e){
 				tgt_id: graph.selection[1]._id }, function(node){
 					graph.newEdge(node);
 			});
+			alert('LINK CREATED! src_id: '+ graph.selection[0]._id+', tgt_id: '+graph.selection[1]._id );
+			graph.unselectAll();
 			return;
 		}
 		alert('Please select 2 nodes to link');
