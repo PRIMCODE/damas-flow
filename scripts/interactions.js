@@ -61,13 +61,19 @@ function keypress(e){
 	if(unicode === 46){ // Delete
 		// REMOVE SELECTION (from local graph only, this is not a deletion in remote database)
 		//for(node in graph.selection)
-		for(var i=0; i< graph.selection.length;i++)
+		
+		var tempSelection = graph.selection.slice(); //temporary array
+
+		for(var i=0; i< tempSelection.length;i++)
 		{
-			var node = graph.selection[i];
+			var node = tempSelection[i];
 			console.log(node);
 			graph.removeNode(node);
 		}
+		tempSelection = [];
+		graph.unselectAll();
 		return;
+		
 	}
 	if(unicode === 48){ // 0
 		return;
@@ -124,6 +130,8 @@ function keypress(e){
 				tgt_id: graph.selection[1]._id }, function(node){
 					graph.newEdge(node);
 			});
+			console.log('LINK CREATED! src_id: '+ graph.selection[0]._id+', tgt_id: '+graph.selection[1]._id );
+			graph.unselectAll();
 			return;
 		}
 		alert('Please select 2 nodes to link');

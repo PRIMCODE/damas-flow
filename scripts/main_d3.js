@@ -26,6 +26,7 @@ require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], func
 	var graph = new damasGraph( document.getElementById('graph'));
 	window.graph = graph;
 	enable_drop(graph.svg, graph);
+	enable_keyboard(graph.svg);
 	var help = document.querySelector('#graphHelpFrame');
 	help.addEventListener('click', function(e){
 		e.target.style.display = 'none';
