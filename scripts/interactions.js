@@ -28,6 +28,7 @@ function enable_keyboard( svg ) {
 function node_pressed(e){
 	if(e.shiftKey)
 	{
+		e.stopPropagation();
 		graph.selectToggle( this );
 		//graph.selection.push( this );
 		//e.target.classList.toggle('selected');
@@ -41,7 +42,7 @@ function node_pressed(e){
 		return false;
 	}
 	if(window['assetOverlay']){
-		assetOverlay(this.data);
+		assetOverlay(this);
 	}
 }
 
@@ -268,10 +269,12 @@ damasflow_ondrop = function ( e )
 	}
 	if (path.indexOf('http://') === 0 || path.indexOf('https://') === 0)
 	{
+		
 		var text = e.dataTransfer.getData('Text');
 		console.log(text);
 		if( text.indexOf(window.location.origin) === 0)
 		{
+			alert('toto !');
 			// DROPPED AN EXISTING NODE FROM SAME SERVER
 			var r = new RegExp(window.location.origin+'.*#view=');
 			var id = parseInt(text.replace(r, ''));
