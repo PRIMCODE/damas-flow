@@ -138,9 +138,17 @@ function keypress(e){
 			damas.create_rest({
 				src_id: graph.selection[0]._id,
 				tgt_id: graph.selection[1]._id }, function(node){
-					graph.newEdge(node);
-			});
-			console.log('LINK CREATED! src_id: '+ graph.selection[0]._id+', tgt_id: '+graph.selection[1]._id );
+					if(!node)
+					{
+						console.log("create link failed! ");
+					}
+					else
+					{
+						graph.newEdge(node);
+						console.log('LINK CREATED! src_id: '+ graph.selection[0]._id+', tgt_id: '+graph.selection[1]._id );
+					}
+				}
+			);
 			graph.unselectAll();
 			return;
 		}
