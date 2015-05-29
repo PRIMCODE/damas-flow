@@ -30,14 +30,12 @@ function node_pressed(e){
 	{
 		e.stopPropagation();
 		graph.selectToggle( this );
-		//graph.selection.push( this );
-		//e.target.classList.toggle('selected');
 		e.preventDefault();
 		return false;
 	}
 	if(e.ctrlKey)
 	{
-		damas_open(this.data.id);
+		damas_open(this._id);
 		e.preventDefault();
 		return false;
 	}
@@ -64,13 +62,19 @@ function keypress(e){
 	if(unicode === 46){ // Delete
 		// REMOVE SELECTION (from local graph only, this is not a deletion in remote database)
 		//for(node in graph.selection)
-		for(var i=0; i< graph.selection.length;i++)
+		
+		var tempSelection = graph.selection.slice(); //temporary array
+
+		for(var i=0; i< tempSelection.length;i++)
 		{
-			var node = graph.selection[i];
+			var node = tempSelection[i];
 			console.log(node);
 			graph.removeNode(node);
 		}
+		tempSelection = [];
+		graph.unselectAll();
 		return;
+		
 	}
 	if(unicode === 48){ // 0
 		return;
@@ -81,6 +85,17 @@ function keypress(e){
 		{
 			graph.selection.push(node);
 			node.shape.classList.toggle('selected');
+		}
+		return;
+	}
+	if(unicode === 100){ // d
+		if (document.querySelector('#graphDebug').style.display === 'none')
+		{
+			document.querySelector('#graphDebug').style.display = 'block';
+		}
+		else
+		{
+			document.querySelector('#graphDebug').style.display = 'none';
 		}
 		return;
 	}
@@ -97,16 +112,27 @@ function keypress(e){
 	}
 	if(unicode === 104){ // h
 		// SHOW HELP PANEL
+		var panel = document.querySelector('#graphHelpFrame');
+		if (panel.style.display === 'none')
+		{
+			panel.style.display = 'block';
+		}
+		else
+		{
+			panel.style.display = 'none';
+		}
 		return;
 	}
 	if(unicode === 108){ // l
 		if(graph.selection[0] && graph.selection[1])
 		{
 			damas.create_rest({
-				src_id: graph.selection[0].data._id,
-				tgt_id: graph.selection[1].data._id }, function(node){
+				src_id: graph.selection[0]._id,
+				tgt_id: graph.selection[1]._id }, function(node){
 					graph.newEdge(node);
 			});
+			console.log('LINK CREATED! src_id: '+ graph.selection[0]._id+', tgt_id: '+graph.selection[1]._id );
+			graph.unselectAll();
 			return;
 		}
 		alert('Please select 2 nodes to link');
@@ -116,6 +142,8 @@ function keypress(e){
 		return;
 	}
 	if(unicode === 116){ // t
+		graph.svg.querySelector('g.texts').classList.toggle('hidden');
+		//TOGGLE TEXTS
 		return;
 	}
 	if(unicode === 99){ // c
@@ -134,8 +162,13 @@ function keypress(e){
 		if(wds)
 			localStorage['workdirs']=wds;
 		return;
-	}/*
+	}
 	if(unicode === 120){ // x
+		// EXPORT GRAPH
+		alert('The graph has been copied to the console.log');
+		console.log(JSON.stringify(graph.nodes.concat(graph.links)));
+	}
+	/*
 		// REMOVE WORKDIR
 		var wds=localStorage["workdirs"].replace(',','\r\n');
 		wds=wds.replace('[','');
@@ -144,7 +177,7 @@ function keypress(e){
 		if(workdir)
 			removeWorkdirs(workdir);
 		return;
-	}*/
+	*/
 	if(unicode === 87){ // W
 		// LIST WORKDIRS
 		var wds="Default Workdirs: \r\n"+(JSON.stringify(wd)).replace(/,/g,'\r\n')+"\r\nUser Workdirs:\r\n";
@@ -237,8 +270,8 @@ damasflow_ondrop = function ( e )
 			return b.length - a.length;
 		});
 		console.log(workdir);
-		for(w in workdir)
-			path= path.replace(workdir[w], '');
+		for(var w=0;w<workdir.length;w++)
+			path= path.replace(new RegExp("^"+workdir[w]), '');
 		//damas.search({file: "='"+path +"'"}, null, null, null, function(res){
 		damas.search_rest('file:'+path, function(res){
 			if(res.length>0)

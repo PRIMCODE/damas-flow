@@ -1,0 +1,33 @@
+body {
+	margin: 0;
+}
+
+div#graphDebug {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	pointer-events:none;
+	color: orange;
+	font-family: monospace;
+	overflow: auto;
+}
+
+div#graphHelpFrame {
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+/*
+	pointer-events:none;
+*/
+	background: url('cheatsheet.svg') no-repeat top left;
+	background-size: contain;
+	background-position: 50% 50%;
+	background-color: rgba(256, 256, 256, .8);
+/*
+	mix-blend-mode: hue;
+*/
+}

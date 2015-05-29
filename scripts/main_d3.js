@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
 });
 
-//require(["https://ajax.googleapis.com/ajax/libs/prototype/1.7.2.0/prototype.js"]);
 require.config({
 	paths: {
 		'prototype': "vendor/prototype",
@@ -17,6 +16,7 @@ require.config({
 });
 
 require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], function(p, damas, d3, damasGraph, interactions){
+	loadCss("style.css");
 	loadCss("scripts/graphViewer/graph-d3.css");
 	loadCss("scripts/graphViewer/graph-common.css");
 	loadCss("scripts/assetViewer/assetOverlay.css");
@@ -37,13 +37,13 @@ require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], func
 
 
 
-	var graphDiv = document.createElement('div');
-	graphDiv.setAttribute('id', 'graph');
-	document.body.appendChild(graphDiv);
-	
-	var graph = new damasGraph( graphDiv );
-	window.graph = graph;
-	enable_drop(graph.svg, graph);
+//	var graphDiv = document.createElement('div');
+//	graphDiv.setAttribute('id', 'graph');
+//	document.body.appendChild(graphDiv);
+//	
+//	var graph = new damasGraph( graphDiv );
+//	window.graph = graph;
+//	enable_drop(graph.svg, graph);
 
 
 	//damasGraph.load( "scripts/graphViewer/bigbuckbunny_characters.json" );
@@ -66,6 +66,15 @@ require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], func
 //		}
 //	});
 //
+
+	var graph = new damasGraph( document.getElementById('graph'));
+	window.graph = graph;
+	enable_drop(graph.svg, graph);
+	enable_keyboard(graph.svg);
+	var help = document.querySelector('#graphHelpFrame');
+	help.addEventListener('click', function(e){
+		e.target.style.display = 'none';
+	});
 });
 
 function loadCss(url) {
@@ -87,4 +96,3 @@ window.addEventListener("resize", function() {
 	svgD.style.height = window.innerHeight - 4 + 'px';
 	svgD.style.width = window.innerWidth - 4 + 'px';
 });
-

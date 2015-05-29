@@ -22,37 +22,25 @@ require(["prototype", "damas", "damasGraph", "graph-client", "ao", "av", "intera
 	//damas.server = '/damas/server';
 	damas.server = '/';
 	window.damas = damas;
+	loadCss('style.css');
 	loadCss('scripts/graphViewer/graph-common.css');
 	loadCss("scripts/assetViewer/assetOverlay.css");
 		
-	var graph = new damasGraph( document.body );
+	var graph = new damasGraph( document.getElementById('graph'));
 	window.graph = graph;
 
 	enable_drop( graph.svg, graph);
 	enable_keyboard( graph.svg);
 	//damas.getUser();
-	graph.svg.style.height = window.innerHeight + 'px';
-/*
-	// roots PHP
-	damas.utils.command_a( { cmd: 'roots' }, function(res){
-		damas.utils.command_a( { cmd: 'read', id: JSON.parse(res.text).join(','), depth: '1', flags: '4' }, function(res){
-			var nodes = JSON.parse( res.text );
-			for(i=0;i<nodes.length;i++)
-			{
-				var n = nodes[i];
-				damasGraph.newNode(n);
-			}
-		});
-	});
-*/
+	graph.svg.style.height = window.innerHeight -3 + 'px';
 
+/*
 	// graph PHP
 	damas.utils.command_a( { cmd: 'graph', id: 306 }, function(res){
 		graph.load(JSON.parse( res.text ));
 	});
 
 	// graph NODEJS
-/*
 	var req = new XMLHttpRequest();
 	req.open('GET', damas.server + '/graph/306', true);
 	req.onreadystatechange = function(e){
@@ -66,9 +54,10 @@ require(["prototype", "damas", "damasGraph", "graph-client", "ao", "av", "intera
 	}
 	req.send();
 */
-
-
-
+	var help = document.querySelector('#graphHelpFrame');
+	help.addEventListener('click', function(e){
+		e.target.style.display = 'none';
+	});
 });
 
 function loadCss(url) {
@@ -80,6 +69,6 @@ function loadCss(url) {
 }
 
 window.addEventListener("resize", function() {
-	damasGraph.svg.style.height = window.innerHeight + 'px';
+	graph.svg.style.height = window.innerHeight -3 + 'px';
 });
 
