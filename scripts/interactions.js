@@ -135,9 +135,11 @@ function keypress(e){
 	if(unicode === 108){ // l
 		if(graph.selection[0] && graph.selection[1])
 		{
+			var id1 = graph.selection[0]._id;
+			var id2 = graph.selection[1]._id;
 			damas.create_rest({
-				src_id: graph.selection[0]._id,
-				tgt_id: graph.selection[1]._id }, function(node){
+				src_id: id1,
+				tgt_id: id2 }, function(node){
 					if(!node)
 					{
 						console.log("create link failed! ");
@@ -145,7 +147,7 @@ function keypress(e){
 					else
 					{
 						graph.newEdge(node);
-						console.log('LINK CREATED! src_id: '+ graph.selection[0]._id+', tgt_id: '+graph.selection[1]._id );
+						console.log('LINK CREATED! src_id: '+ id1+', tgt_id: '+id2 );
 					}
 				}
 			);
