@@ -67,8 +67,18 @@ function keypress(e){
 		for(var i=0; i< tempSelection.length;i++)
 		{
 			var node = tempSelection[i];
+			var id = node._id;
 			console.log(node);
-			graph.removeNode(node);
+			if(node.src_id && node.tgt_id)
+			{
+				damas.delete_rest(id, function(success){
+					if(success) graph.removeNode(node);
+				});
+			}
+			else
+			{
+				graph.removeNode(node);
+			}
 		}
 		tempSelection = [];
 		graph.unselectAll();
