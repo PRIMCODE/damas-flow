@@ -68,8 +68,18 @@ function keypress(e){
 		for(var i=0; i< tempSelection.length;i++)
 		{
 			var node = tempSelection[i];
+			var id = node._id;
 			console.log(node);
-			graph.removeNode(node);
+			if(node.src_id && node.tgt_id)
+			{
+				damas.delete_rest(id, function(success){
+					if(success) graph.removeNode(node);
+				});
+			}
+			else
+			{
+				graph.removeNode(node);
+			}
 		}
 		tempSelection = [];
 		graph.unselectAll();
@@ -126,12 +136,22 @@ function keypress(e){
 	if(unicode === 108){ // l
 		if(graph.selection[0] && graph.selection[1])
 		{
+			var id1 = graph.selection[0]._id;
+			var id2 = graph.selection[1]._id;
 			damas.create_rest({
-				src_id: graph.selection[0]._id,
-				tgt_id: graph.selection[1]._id }, function(node){
-					graph.newEdge(node);
-			});
-			console.log('LINK CREATED! src_id: '+ graph.selection[0]._id+', tgt_id: '+graph.selection[1]._id );
+				src_id: id1,
+				tgt_id: id2 }, function(node){
+					if(!node)
+					{
+						console.log("create link failed! ");
+					}
+					else
+					{
+						graph.newEdge(node);
+						console.log('LINK CREATED! src_id: '+ id1+', tgt_id: '+id2 );
+					}
+				}
+			);
 			graph.unselectAll();
 			return;
 		}
