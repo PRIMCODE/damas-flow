@@ -31,6 +31,8 @@ require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], func
 	help.addEventListener('click', function(e){
 		e.target.style.display = 'none';
 	});
+	graph.svg.style.height = window.innerHeight - 3 + 'px';
+	graph.svg.style.width = window.innerWidth + 'px';
 });
 
 function loadCss(url) {
@@ -41,14 +43,7 @@ function loadCss(url) {
 	document.getElementsByTagName("head")[0].appendChild(link);
 }
 
-//window.addEventListener("resize", function() {
-//	svg.style.height = window.innerHeight + 'px';
-//});
-
 window.addEventListener("resize", function() {
-	var svgD = document.getElementById('svggraph');
-	var height = window.innerHeight;
-	var width = window.innerWidth;
-	svgD.style.height = window.innerHeight - 4 + 'px';
-	svgD.style.width = window.innerWidth - 4 + 'px';
+	graph.svg.style.height = window.innerHeight - 3 + 'px';
+	graph.svg.style.width = window.innerWidth + 'px';
 });
