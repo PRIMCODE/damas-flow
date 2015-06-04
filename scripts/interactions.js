@@ -135,6 +135,7 @@ function keypress(e){
 	if(unicode === 108){ // l
 		if(graph.selection[0] && graph.selection[1])
 		{
+			graph.unhighlightElements();
 			var id1 = graph.selection[0]._id;
 			var id2 = graph.selection[1]._id;
 			damas.create_rest({
