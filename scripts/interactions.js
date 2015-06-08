@@ -1,4 +1,3 @@
-
 var wd= (JSON.parse(loadConfJSON())).workdirs;
 console.log(wd);
 if(!localStorage['workdirs'])
@@ -28,7 +27,6 @@ function enable_keyboard( svg ) {
 function node_pressed(e){
 	if(e.shiftKey)
 	{
-		e.stopPropagation();
 		graph.selectToggle( this );
 		e.preventDefault();
 		return false;
@@ -136,6 +134,7 @@ function keypress(e){
 	if(unicode === 108){ // l
 		if(graph.selection[0] && graph.selection[1])
 		{
+			graph.unhighlightElements();
 			var id1 = graph.selection[0]._id;
 			var id2 = graph.selection[1]._id;
 			damas.create_rest({
@@ -322,12 +321,10 @@ damasflow_ondrop = function ( e )
 	}
 	if (path.indexOf('http://') === 0 || path.indexOf('https://') === 0)
 	{
-		
 		var text = e.dataTransfer.getData('Text');
 		console.log(text);
 		if( text.indexOf(window.location.origin) === 0)
 		{
-			alert('toto !');
 			// DROPPED AN EXISTING NODE FROM SAME SERVER
 			var r = new RegExp(window.location.origin+'.*#view=');
 			var id = parseInt(text.replace(r, ''));
