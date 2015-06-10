@@ -61,7 +61,7 @@ function keypress(e){
 	if(unicode === 46){ // Delete
 		// REMOVE SELECTION (from local graph only, this is not a deletion in remote database)
 		//for(node in graph.selection)
-		
+
 		var tempSelection = graph.selection.slice(); //temporary array
 
 		for(var i=0; i< tempSelection.length;i++)
@@ -83,7 +83,7 @@ function keypress(e){
 		tempSelection = [];
 		graph.unselectAll();
 		return;
-		
+
 	}
 	if(unicode === 48){ // 0
 		return;
@@ -285,14 +285,23 @@ damasflow_ondrop = function ( e )
 	if (path.indexOf('file://') === 0)
 	{
 		path = path.replace('file://', '');
+		var newPath=path;
 		var workdir=wd.concat(JSON.parse(localStorage["workdirs"]));
 		workdir.sort(function(a, b){
 			return b.length - a.length;
 		});
-		console.log(workdir);
-		var oldPath=path;
 		for(var w=0;w<workdir.length;w++){
-			path= path.replace(new RegExp("^"+workdir[w]), '');
+			newPath= path.replace(new RegExp("^"+workdir[w]), '');
+		}
+		if(newPath===path){
+			var newWd=prompt("Create this workdir?",path.replace(/\/[^\/]*$/,""));
+			if(newWd){
+				var tmp=[];
+				tmp= JSON.parse(localStorage["workdirs"])
+				tmp.push(newWd);
+				localStorage["workdirs"]=JSON.stringify(tmp);
+			}
+			path= path.replace(new RegExp("^"+newWd), '');
 		}
 		//damas.search({file: "='"+path +"'"}, null, null, null, function(res){
 		damas.search_rest('file:'+path, function(res){
@@ -310,18 +319,6 @@ damasflow_ondrop = function ( e )
 			}
 			else
 			{
-				if(oldPath===path){
-					var newWd=path.replace(/\/[^\/]*$/,"");
-					newWd=prompt("Ajouter à vos workdirs?",newWd);
-					if(newWd){
-						var tmp=[];
-						tmp= JSON.parse(localStorage["workdirs"])
-						tmp.push(newWd);
-						localStorage["workdirs"]=JSON.stringify(tmp);
-					}
-					console.log(localStorage["workdirs"]);
-					path= path.replace(new RegExp("^"+newWd), '');
-				}
 				if( confirm('Add ' + decodeURIComponent(path) + '?'))
 				{
 					console.log(e.dataTransfer);
