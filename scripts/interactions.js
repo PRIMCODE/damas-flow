@@ -161,6 +161,18 @@ function keypress(e){
 	if(unicode === 109){ // m
 		return;
 	}
+	if(unicode === 114){ // r
+		// RESUME ANIMATION
+		if(graph.force)
+			graph.force.resume();
+		return;
+	}
+	if(unicode === 115){ // s
+		// STOP ANIMATION
+		if(graph.force)
+			graph.force.stop();
+		return;
+	}
 	if(unicode === 116){ // t
 		graph.svg.querySelector('g.texts').classList.toggle('hidden');
 		//TOGGLE TEXTS
