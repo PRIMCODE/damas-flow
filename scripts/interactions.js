@@ -61,27 +61,29 @@ function keypress(e){
 	if(unicode === 46){ // Delete
 		// REMOVE SELECTION (from local graph only, this is not a deletion in remote database)
 		//for(node in graph.selection)
-		
-		var tempSelection = graph.selection.slice(); //temporary array
+		graph.unhighlightElements();
+		var selection = graph.selection; //selection array
 
-		for(var i=0; i< tempSelection.length;i++)
+		for(var i = selection.length -1; i >= 0; i--) //For in reverse because each loop the lenght change
 		{
-			var node = tempSelection[i];
-			var id = node._id;
+			var node = selection[i];
 			console.log(node);
 			if(node.src_id && node.tgt_id)
 			{
-				damas.delete_rest(id, function(success){
-					if(success) graph.removeNode(node);
+				(function(node){
+					var id = node._id;
+					damas.delete_rest(id, function(success){
+					if(success){
+						graph.removeNode(node);
+					}
 				});
+				})(node);
 			}
 			else
 			{
 				graph.removeNode(node);
 			}
 		}
-		tempSelection = [];
-		graph.unselectAll();
 		return;
 		
 	}
