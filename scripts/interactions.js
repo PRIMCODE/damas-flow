@@ -269,8 +269,10 @@ damasflow_ondrop = function ( e )
 			return b.length - a.length;
 		});
 		console.log(workdir);
-		for(var w=0;w<workdir.length;w++)
+		var oldPath=path;
+		for(var w=0;w<workdir.length;w++){
 			path= path.replace(new RegExp("^"+workdir[w]), '');
+		}
 		//damas.search({file: "='"+path +"'"}, null, null, null, function(res){
 		damas.search_rest('file:'+path, function(res){
 			if(res.length>0)
@@ -287,7 +289,19 @@ damasflow_ondrop = function ( e )
 			}
 			else
 			{
-				if( confirm('Add ' + path + '?'))
+				if(oldPath===path){
+					var newWd=path.replace(/\/[^\/]*$/,"");
+					newWd=prompt("Ajouter à vos workdirs?",newWd);
+					if(newWd){
+						var tmp=[];
+						tmp= JSON.parse(localStorage["workdirs"])
+						tmp.push(newWd);
+						localStorage["workdirs"]=JSON.stringify(tmp);
+					}
+					console.log(localStorage["workdirs"]);
+					path= path.replace(new RegExp("^"+newWd), '');
+				}
+				if( confirm('Add ' + decodeURIComponent(path) + '?'))
 				{
 					console.log(e.dataTransfer);
 					console.log(path);
