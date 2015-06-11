@@ -17,7 +17,6 @@ require.config({
 
 require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], function(p, damas, d3, damasGraph, interactions){
 	loadCss("style.css");
-	loadCss("scripts/graphViewer/graph-d3.css");
 	loadCss("scripts/graphViewer/graph-common.css");
 	loadCss("scripts/assetViewer/assetOverlay.css");
 	window.damas = damas;

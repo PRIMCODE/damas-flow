@@ -165,6 +165,12 @@ function keypress(e){
 		//TOGGLE TEXTS
 		return;
 	}
+	if(unicode === 111){ // o
+		graph.svg.querySelector('g.edges').classList.toggle('shadowE');
+		graph.svg.querySelector('g.nodes').classList.toggle('shadowN');
+		//TOGGLE TEXTS
+		return;
+	}
 	if(unicode === 99){ // c
 		// CREATE NODE
 		var keys = prompt('keys', '{"label":"test"}');
