@@ -61,29 +61,30 @@ function keypress(e){
 	if(unicode === 46){ // Delete
 		// REMOVE SELECTION (from local graph only, this is not a deletion in remote database)
 		//for(node in graph.selection)
-		
-		var tempSelection = graph.selection.slice(); //temporary array
-
-		for(var i=0; i< tempSelection.length;i++)
+		graph.unhighlightElements();
+		var selection = graph.selection; //selection array
+		for(var i = selection.length -1; i >= 0; i--) //For in reverse because each loop the lenght change
 		{
-			var node = tempSelection[i];
-			var id = node._id;
+			var node = selection[i];
 			console.log(node);
 			if(node.src_id && node.tgt_id)
 			{
-				damas.delete_rest(id, function(success){
-					if(success) graph.removeNode(node);
+				(function(node){
+					var id = node._id;
+					damas.delete_rest(id, function(success){
+					if(success){
+						graph.removeNode(node);
+					}
 				});
+				})(node);
 			}
 			else
 			{
 				graph.removeNode(node);
 			}
 		}
-		tempSelection = [];
-		graph.unselectAll();
 		return;
-		
+
 	}
 	if(unicode === 48){ // 0
 		return;
@@ -135,6 +136,7 @@ function keypress(e){
 	if(unicode === 108){ // l
 		if(graph.selection[0] && graph.selection[1])
 		{
+			graph.unhighlightElements();
 			var id1 = graph.selection[0]._id;
 			var id2 = graph.selection[1]._id;
 			damas.create_rest({
@@ -158,6 +160,18 @@ function keypress(e){
 		return;
 	}
 	if(unicode === 109){ // m
+		return;
+	}
+	if(unicode === 114){ // r
+		// RESUME ANIMATION
+		if(graph.force)
+			graph.force.resume();
+		return;
+	}
+	if(unicode === 115){ // s
+		// STOP ANIMATION
+		if(graph.force)
+			graph.force.stop();
 		return;
 	}
 	if(unicode === 116){ // t
@@ -284,15 +298,28 @@ damasflow_ondrop = function ( e )
 	if (path.indexOf('file://') === 0)
 	{
 		path = path.replace('file://', '');
+		var newPath=path;
 		var workdir=wd.concat(JSON.parse(localStorage["workdirs"]));
 		workdir.sort(function(a, b){
 			return b.length - a.length;
 		});
-		console.log(workdir);
-		for(var w=0;w<workdir.length;w++)
-			path= path.replace(new RegExp("^"+workdir[w]), '');
+		for(var w=0;w<workdir.length;w++){
+			newPath= path.replace(new RegExp("^"+workdir[w]), '');
+			if(newPath!=path)
+				break;
+		}
+		if(newPath===path){
+			var newWd=prompt("Create this workdir?",path.replace(/\/[^\/]*$/,""));
+			if(newWd){
+				var tmp=[];
+				tmp= JSON.parse(localStorage["workdirs"])
+				tmp.push(newWd);
+				localStorage["workdirs"]=JSON.stringify(tmp);
+			}
+			path= path.replace(new RegExp("^"+newWd), '');
+		}
 		//damas.search({file: "='"+path +"'"}, null, null, null, function(res){
-		damas.search_rest('file:'+path, function(res){
+		damas.search_rest('file:'+newPath, function(res){
 			if(res.length>0)
 			{
 /*
@@ -307,11 +334,11 @@ damasflow_ondrop = function ( e )
 			}
 			else
 			{
-				if( confirm('Add ' + path + '?'))
+				if( confirm('Add ' + decodeURIComponent(newPath) + '?'))
 				{
 					console.log(e.dataTransfer);
-					console.log(path);
-					damas.create_rest({ file: path }, function(node){
+					console.log(newPath);
+					damas.create_rest({ file: newPath }, function(node){
 						graph.newNode(node);
 					});
 				}
