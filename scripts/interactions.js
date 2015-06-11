@@ -1,4 +1,3 @@
-
 var wd= (JSON.parse(loadConfJSON())).workdirs;
 console.log(wd);
 if(!localStorage['workdirs'])
@@ -177,6 +176,12 @@ function keypress(e){
 	if(unicode === 116){ // t
 		graph.svg.querySelector('g.texts').classList.toggle('hidden');
 		//TOGGLE TEXTS
+		return;
+	}
+	if(unicode === 111){ // o
+		graph.svg.querySelector('g.edges').classList.toggle('shadowE');
+		graph.svg.querySelector('g.nodes').classList.toggle('shadowN');
+		//TOGGLE SHADOWS
 		return;
 	}
 	if(unicode === 99){ // c
