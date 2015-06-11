@@ -282,59 +282,6 @@ damasflow_ondrop = function ( e )
 		return;
 	}
 
-	if (path.indexOf('file://') === 0)
-	{
-		path = path.replace('file://', '');
-		var newPath=path;
-		var workdir=wd.concat(JSON.parse(localStorage["workdirs"]));
-		workdir.sort(function(a, b){
-			return b.length - a.length;
-		});
-		for(var w=0;w<workdir.length;w++){
-			newPath= path.replace(new RegExp("^"+workdir[w]), '');
-			if(newPath!=path)
-				break;
-		}
-		if(newPath===path){
-			var newWd=prompt("Create this workdir?",path.replace(/\/[^\/]*$/,""));
-			if(newWd){
-				var tmp=[];
-				tmp= JSON.parse(localStorage["workdirs"])
-				tmp.push(newWd);
-				localStorage["workdirs"]=JSON.stringify(tmp);
-			}
-			newPath= path.replace(new RegExp("^"+newWd), '');
-		}
-		if(newPath.indexOf("/")!=0)
-			newPath= "/"+newPath;
-		//damas.search({file: "='"+path +"'"}, null, null, null, function(res){
-		damas.search_rest('file:'+newPath, function(res){
-			if(res.length>0)
-			{
-/*
-				damas.utils.command_a( {cmd: 'graph', id: res[0] }, function(res){
-					graph.load( JSON.parse( res.text ));
-				});
-*/
-				damas.get_rest( 'graph/'+res[0], function(res){
-					graph.load( res);
-					//graph.load( JSON.parse( res ));
-				});
-			}
-			else
-			{
-				if( confirm('Add ' + decodeURIComponent(newPath) + '?'))
-				{
-					console.log(e.dataTransfer);
-					console.log(newPath);
-					damas.create_rest({ file: newPath }, function(node){
-						graph.newNode(node);
-					});
-				}
-			}
-		});
-		return;
-	}
 	if (path.indexOf('http://') === 0 || path.indexOf('https://') === 0)
 	{
 		var text = e.dataTransfer.getData('Text');
@@ -349,44 +296,57 @@ damasflow_ondrop = function ( e )
 			damas.utils.command_a( {cmd: 'graph', id: id }, function(res){
 				graph.load( JSON.parse( res.text ));
 			});
+			return;
 		}
-		//else
-		//{
-			// DROP ARBITRARY LINK
-			//var elem = damas.create( {
-				//url: e.dataTransfer.getData('Text')
-			//});
-			//nodes[elem.id] = graph.newNode({'label': e.dataTransfer.getData('Text')});
-			//graph.newNode({keys:{}, 'label': e.dataTransfer.getData('Text')});
-			//nodes[elem.id].damelem = elem;
-		//}
-		return;
-	}
-	if (path)
-	{
-		damas.search_rest('file:'+path, function(res){
-			if(res.length>0)
-			{
-				damas.get_rest( 'graph/'+res[0], function(res){
-					graph.load( res);
-				});
-			}
-			else
-			{
-				if( confirm('Add ' + path + '?'))
-				{
-					console.log(e.dataTransfer);
-					console.log(path);
-					//damas.create({ file: path }, function(node){
-					damas.create_rest({ file: path }, function(node){
-						graph.newNode(node);
-					});
-				}
-			}
-		});
-		return;
 	}
 
+	var newPath;
+	var workdir=wd.concat(JSON.parse(localStorage["workdirs"]));
+	workdir.sort(function(a, b){
+		return b.length - a.length;
+	});
+	for(var w=0;w<workdir.length;w++){
+		if(workdir[w][workdir[w].length-1]==="/")
+			newPath= path.replace(new RegExp("^"+workdir[w]), '');
+		else
+			newPath= path.replace(new RegExp("^"+workdir[w]+"/"), '');
+		if(newPath!=path)
+			break;
+	}
+	if(newPath===path){
+		var newWd=prompt("Create this workdir?",path.replace(/\/[^\/]*$/,""));
+		if(newWd){
+			var tmp=[];
+			tmp= JSON.parse(localStorage["workdirs"])
+			tmp.push(newWd);
+			localStorage["workdirs"]=JSON.stringify(tmp);
+		}
+		newPath= path.replace(new RegExp("^"+newWd), '');
+	}
+	if(newPath.indexOf("/")!=0)
+		newPath= "/"+newPath;
+	damas.search_rest('file:'+newPath, function(res){
+		if(res.length>0)
+		{
+			damas.get_rest( 'graph/'+res[0], function(res){
+				graph.load( res);
+				//graph.load( JSON.parse( res ));
+			});
+			}
+		}
+		else
+		{
+			if( confirm('Add ' + decodeURIComponent(newPath) + '?'))
+			{
+				console.log(e.dataTransfer);
+				console.log(path);
+				damas.create_rest({ file: path }, function(node){
+					graph.newNode(node);
+				});
+			}
+		}
+	});
+	return;
 }
 
 function removeWorkdirs(wd){
