@@ -303,8 +303,10 @@ damasflow_ondrop = function ( e )
 				tmp.push(newWd);
 				localStorage["workdirs"]=JSON.stringify(tmp);
 			}
-			path= path.replace(new RegExp("^"+newWd), '');
+			newPath= path.replace(new RegExp("^"+newWd), '');
 		}
+		if(newPath.indexOf("/")!=0)
+			newPath= "/"+newPath;
 		//damas.search({file: "='"+path +"'"}, null, null, null, function(res){
 		damas.search_rest('file:'+newPath, function(res){
 			if(res.length>0)
