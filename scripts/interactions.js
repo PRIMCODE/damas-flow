@@ -300,28 +300,18 @@ damasflow_ondrop = function ( e )
 		}
 	}
 
-	var newPath;
-	var workdir=wd.concat(JSON.parse(localStorage["workdirs"]));
-	workdir.sort(function(a, b){
-		return b.length - a.length;
-	});
-	for(var w=0;w<workdir.length;w++){
-		if(workdir[w][workdir[w].length-1]==="/")
-			newPath= path.replace(new RegExp("^"+workdir[w]), '');
-		else
-			newPath= path.replace(new RegExp("^"+workdir[w]+"/"), '');
-		if(newPath!=path)
-			break;
-	}
-	if(newPath===path){
+	var newPath= treatPath(path);
+
+	if(!newPath){
+		newPath=path;
 		var newWd=prompt("Create this workdir?",path.replace(/\/[^\/]*$/,""));
 		if(newWd){
-			var tmp=[];
-			tmp= JSON.parse(localStorage["workdirs"])
-			tmp.push(newWd);
-			localStorage["workdirs"]=JSON.stringify(tmp);
+			addWorkdirs(newWd);
+			if(newWd[newWd.length-1]==="/")
+				newPath= path.replace(new RegExp("^"+newWd), '');
+			else
+				newPath= path.replace(new RegExp("^"+newWd+"/"), '');
 		}
-		newPath= path.replace(new RegExp("^"+newWd), '');
 	}
 	if(newPath.indexOf("/")!=0)
 		newPath= "/"+newPath;
@@ -340,7 +330,7 @@ damasflow_ondrop = function ( e )
 			{
 				console.log(e.dataTransfer);
 				console.log(path);
-				damas.create_rest({ file: path }, function(node){
+				damas.create_rest({ file: newPath }, function(node){
 					graph.newNode(node);
 				});
 			}
@@ -363,6 +353,23 @@ function addWorkdirs(wd){
 	workdirs.push(wd);
 	localStorage["workdirs"]=JSON.stringify(workdirs);
 	console.log(localStorage["workdirs"]);
+}
+
+function treatPath(path){
+	var workdir=wd.concat(JSON.parse(localStorage["workdirs"]));
+	var tempWd=null;
+	workdir.sort(function(a, b){
+		return b.length - a.length;
+	});
+	for(var w=0;w<workdir.length;w++){
+		if(workdir[w][workdir[w].length-1]==="/")
+			tempWd= workdir[w];
+		else
+			tempWd= workdir[w]+"/";
+		if(path.indexOf(tempWd)===0)
+			return path.replace(tempWd,"");
+	}
+	return null;
 }
 
 function loadConfJSON() {
