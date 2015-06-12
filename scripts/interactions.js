@@ -325,10 +325,7 @@ damasflow_ondrop = function ( e )
 		var newWd=prompt("Create this workdir?",path.replace(/\/[^\/]*$/,""));
 		if(newWd){
 			addWorkdirs(newWd);
-			if(newWd[newWd.length-1]==="/")
-				newPath= path.replace(new RegExp("^"+newWd), '');
-			else
-				newPath= path.replace(new RegExp("^"+newWd+"/"), '');
+			newPath= path.replace(new RegExp("^"+newWd+"/?"), '');
 		}
 	}
 	if(newPath.indexOf("/")!=0)
