@@ -1,5 +1,5 @@
-var wd= (JSON.parse(loadConfJSON())).workdirs;
-console.log(wd);
+var confWorkdir= (JSON.parse(loadConfJSON())).workdirs;
+
 if(!localStorage['workdirs'])
 	localStorage['workdirs']='[]';
 
@@ -218,7 +218,7 @@ function keypress(e){
 	*/
 	if(unicode === 87){ // W
 		// LIST WORKDIRS
-		var wds="Default Workdirs: \r\n"+(JSON.stringify(wd)).replace(/,/g,'\r\n')+"\r\nUser Workdirs:\r\n";
+		var wds="Default Workdirs: \r\n"+(JSON.stringify(confWorkdir)).replace(/,/g,'\r\n')+"\r\nUser Workdirs:\r\n";
 		wds+=localStorage["workdirs"].replace(/,/g,'\r\n');
 		wds=wds.replace(/\[/g,'');
 		wds=wds.replace(/\]/g,'');
@@ -318,17 +318,14 @@ damasflow_ondrop = function ( e )
 		}
 	}
 
-	var newPath= treatPath(path);
+	var newPath= processPath(path);
 
 	if(!newPath){
 		newPath=path;
 		var newWd=prompt("Create this workdir?",path.replace(/\/[^\/]*$/,""));
 		if(newWd){
 			addWorkdirs(newWd);
-			if(newWd[newWd.length-1]==="/")
-				newPath= path.replace(new RegExp("^"+newWd), '');
-			else
-				newPath= path.replace(new RegExp("^"+newWd+"/"), '');
+			newPath= path.replace(new RegExp("^"+newWd+"/?"), '');
 		}
 	}
 	if(newPath.indexOf("/")!=0)
@@ -340,15 +337,17 @@ damasflow_ondrop = function ( e )
 				graph.load( res);
 				//graph.load( JSON.parse( res ));
 			});
+			if( confirm('Update ' + decodeURIComponent(newPath) + '?'))
+			{
+				damas.upload_rest(e.dataTransfer.files[0],newPath, res[0], function(node){
+				});
 			}
 		}
 		else
 		{
 			if( confirm('Add ' + decodeURIComponent(newPath) + '?'))
 			{
-				console.log(e.dataTransfer);
-				console.log(path);
-				damas.create_rest({ file: newPath }, function(node){
+				damas.upload_rest(e.dataTransfer.files[0],newPath, null, function(node){
 					graph.newNode(node);
 				});
 			}
@@ -373,8 +372,8 @@ function addWorkdirs(wd){
 	console.log(localStorage["workdirs"]);
 }
 
-function treatPath(path){
-	var workdir=wd.concat(JSON.parse(localStorage["workdirs"]));
+function processPath(path){
+	var workdir=confWorkdir.concat(JSON.parse(localStorage["workdirs"]));
 	var tempWd=null;
 	workdir.sort(function(a, b){
 		return b.length - a.length;
