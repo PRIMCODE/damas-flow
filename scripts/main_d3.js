@@ -17,7 +17,6 @@ require.config({
 
 require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], function(p, damas, d3, damasGraph, interactions){
 	loadCss("style.css");
-	loadCss("scripts/graphViewer/graph-d3.css");
 	loadCss("scripts/graphViewer/graph-common.css");
 	loadCss("scripts/assetViewer/assetOverlay.css");
 	window.damas = damas;
@@ -33,6 +32,8 @@ require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], func
 	});
 	graph.svg.style.height = window.innerHeight - 3 + 'px';
 	graph.svg.style.width = window.innerWidth + 'px';
+
+	process_hash();
 });
 
 function loadCss(url) {
@@ -47,3 +48,17 @@ window.addEventListener("resize", function() {
 	graph.svg.style.height = window.innerHeight - 3 + 'px';
 	graph.svg.style.width = window.innerWidth + 'px';
 });
+
+window.addEventListener("hashchange", function() {
+	//process_hash();
+});
+
+process_hash = function() {
+	if(/#graph=/.test(location.hash))
+	{
+		var id = location.hash.replace('#graph=','');
+		damas.get_rest( 'graph/'+id, function(res){
+			graph.load(res);
+		});
+	}
+}

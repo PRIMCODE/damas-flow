@@ -1,4 +1,3 @@
-
 var wd= (JSON.parse(loadConfJSON())).workdirs;
 console.log(wd);
 if(!localStorage['workdirs'])
@@ -61,27 +60,28 @@ function keypress(e){
 	if(unicode === 46){ // Delete
 		// REMOVE SELECTION (from local graph only, this is not a deletion in remote database)
 		//for(node in graph.selection)
-
-		var tempSelection = graph.selection.slice(); //temporary array
-
-		for(var i=0; i< tempSelection.length;i++)
+		graph.unhighlightElements();
+		var selection = graph.selection; //selection array
+		for(var i = selection.length -1; i >= 0; i--) //For in reverse because each loop the lenght change
 		{
-			var node = tempSelection[i];
-			var id = node._id;
+			var node = selection[i];
 			console.log(node);
 			if(node.src_id && node.tgt_id)
 			{
-				damas.delete_rest(id, function(success){
-					if(success) graph.removeNode(node);
+				(function(node){
+					var id = node._id;
+					damas.delete_rest(id, function(success){
+					if(success){
+						graph.removeNode(node);
+					}
 				});
+				})(node);
 			}
 			else
 			{
 				graph.removeNode(node);
 			}
 		}
-		tempSelection = [];
-		graph.unselectAll();
 		return;
 
 	}
@@ -161,9 +161,27 @@ function keypress(e){
 	if(unicode === 109){ // m
 		return;
 	}
+	if(unicode === 114){ // r
+		// RESUME ANIMATION
+		if(graph.force)
+			graph.force.resume();
+		return;
+	}
+	if(unicode === 115){ // s
+		// STOP ANIMATION
+		if(graph.force)
+			graph.force.stop();
+		return;
+	}
 	if(unicode === 116){ // t
 		graph.svg.querySelector('g.texts').classList.toggle('hidden');
 		//TOGGLE TEXTS
+		return;
+	}
+	if(unicode === 111){ // o
+		graph.svg.querySelector('g.edges').classList.toggle('shadowE');
+		graph.svg.querySelector('g.nodes').classList.toggle('shadowN');
+		//TOGGLE SHADOWS
 		return;
 	}
 	if(unicode === 99){ // c
