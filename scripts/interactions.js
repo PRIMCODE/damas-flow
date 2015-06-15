@@ -337,17 +337,12 @@ damasflow_ondrop = function ( e )
 				graph.load( res);
 				//graph.load( JSON.parse( res ));
 			});
-			if( confirm('Update ' + decodeURIComponent(newPath) + '?'))
-			{
-				damas.upload_rest(e.dataTransfer.files[0],newPath, res[0], function(node){
-				});
-			}
 		}
 		else
 		{
 			if( confirm('Add ' + decodeURIComponent(newPath) + '?'))
 			{
-				damas.upload_rest(e.dataTransfer.files[0],newPath, null, function(node){
+				damas.create_rest({ file: newPath }, function(node){
 					graph.newNode(node);
 				});
 			}
