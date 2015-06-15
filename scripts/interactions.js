@@ -333,6 +333,7 @@ damasflow_ondrop = function ( e )
 	damas.search_rest('file:'+newPath, function(res){
 		if(res.length>0)
 		{
+			window.document.location.hash = 'graph='+res[0];
 			damas.get_rest( 'graph/'+res[0], function(res){
 				graph.load( res);
 				//graph.load( JSON.parse( res ));
