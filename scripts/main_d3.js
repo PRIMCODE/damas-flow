@@ -30,7 +30,7 @@ require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], func
 	help.addEventListener('click', function(e){
 		e.target.style.display = 'none';
 	});
-	graph.svg.style.height = window.innerHeight - 3 + 'px';
+	graph.svg.style.height = window.innerHeight - 4 + 'px';
 	graph.svg.style.width = window.innerWidth + 'px';
 
 	process_hash();
@@ -45,7 +45,7 @@ function loadCss(url) {
 }
 
 window.addEventListener("resize", function() {
-	graph.svg.style.height = window.innerHeight - 3 + 'px';
+	graph.svg.style.height = window.innerHeight - 4 + 'px';
 	graph.svg.style.width = window.innerWidth + 'px';
 });
 
