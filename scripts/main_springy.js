@@ -1,6 +1,3 @@
-document.addEventListener('DOMContentLoaded', function() {
-});
-
 require.config({
 	paths: {
 		'prototype': "vendor/prototype",
@@ -11,13 +8,14 @@ require.config({
 		'damasGraph':	"graphViewer/graph-springy",
 		'interactions': "interactions",
 		'graph-client': "graph-client",
+		'main_common': "main_common",
 		'ao': "assetViewer/assetOverlay",
 		'av': "assetViewer/assetViewerSelector"
 	},
 	urlArgs: "v=" +  (new Date()).getTime()
 });
 
-require(["prototype", "damas", "damasGraph", "graph-client", "ao", "av", "interactions" ], function(p, damas, damasGraph){
+require(["prototype", "damas", "damasGraph", "graph-client", "main_common", "ao", "av", "interactions" ], function(p, damas, damasGraph){
 	// PHP
 	//damas.server = '/damas/server';
 	damas.server = '/';
@@ -34,41 +32,10 @@ require(["prototype", "damas", "damasGraph", "graph-client", "ao", "av", "intera
 	//damas.getUser();
 	graph.svg.style.height = window.innerHeight -3 + 'px';
 
-/*
-	// graph PHP
-	damas.utils.command_a( { cmd: 'graph', id: 306 }, function(res){
-		graph.load(JSON.parse( res.text ));
-	});
-
-	// graph NODEJS
-	var req = new XMLHttpRequest();
-	req.open('GET', damas.server + '/graph/306', true);
-	req.onreadystatechange = function(e){
-		if(req.readyState == 4)
-		{
-			if(req.status == 200)
-			{
-				damasGraph.load( JSON.parse(req.responseText));
-			}
-		}
-	}
-	req.send();
-*/
 	var help = document.querySelector('#graphHelpFrame');
 	help.addEventListener('click', function(e){
 		e.target.style.display = 'none';
 	});
+
+	process_hash();
 });
-
-function loadCss(url) {
-	var link = document.createElement("link");
-	link.type = "text/css";
-	link.rel = "stylesheet";
-	link.href = url;
-	document.getElementsByTagName("head")[0].appendChild(link);
-}
-
-window.addEventListener("resize", function() {
-	graph.svg.style.height = window.innerHeight -3 + 'px';
-});
-

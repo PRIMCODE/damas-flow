@@ -1,13 +1,10 @@
-document.addEventListener('DOMContentLoaded', function() {
-});
-
 require.config({
 	paths: {
-		'prototype': "vendor/prototype",
 		'damas': "damas",
 		'd3': 'graphViewer/vendor/d3',
 		'graph-common': "graphViewer/graph-common",
 		'graph': 'graphViewer/graph-d3',
+		'main_common': "main_common",
 		'interactions': "interactions",
 		'ao': "assetViewer/assetOverlay",
 		'av': "assetViewer/assetViewerSelector"
@@ -15,7 +12,7 @@ require.config({
 	urlArgs: "v=" +  (new Date()).getTime()
 });
 
-require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], function(p, damas, d3, damasGraph, interactions){
+require(["damas", "d3", "graph", "main_common", "interactions", "ao", "av" ], function(damas, d3, damasGraph, interactions){
 	loadCss("style.css");
 	loadCss("scripts/graphViewer/graph-common.css");
 	loadCss("scripts/assetViewer/assetOverlay.css");
@@ -35,30 +32,3 @@ require(["prototype", "damas", "d3", "graph", "interactions", "ao", "av" ], func
 
 	process_hash();
 });
-
-function loadCss(url) {
-	var link = document.createElement("link");
-	link.type = "text/css";
-	link.rel = "stylesheet";
-	link.href = url;
-	document.getElementsByTagName("head")[0].appendChild(link);
-}
-
-window.addEventListener("resize", function() {
-	graph.svg.style.height = window.innerHeight - 4 + 'px';
-	graph.svg.style.width = window.innerWidth + 'px';
-});
-
-window.addEventListener("hashchange", function() {
-	//process_hash();
-});
-
-process_hash = function() {
-	if(/#graph=/.test(location.hash))
-	{
-		var id = location.hash.replace('#graph=','');
-		damas.get_rest( 'graph/'+id, function(res){
-			graph.load(res);
-		});
-	}
-}
