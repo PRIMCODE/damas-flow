@@ -1,5 +1,5 @@
-var wd= (JSON.parse(loadConfJSON())).workdirs;
-console.log(wd);
+var confWorkdir= (JSON.parse(loadConfJSON())).workdirs;
+
 if(!localStorage['workdirs'])
 	localStorage['workdirs']='[]';
 
@@ -218,7 +218,7 @@ function keypress(e){
 	*/
 	if(unicode === 87){ // W
 		// LIST WORKDIRS
-		var wds="Default Workdirs: \r\n"+(JSON.stringify(wd)).replace(/,/g,'\r\n')+"\r\nUser Workdirs:\r\n";
+		var wds="Default Workdirs: \r\n"+(JSON.stringify(confWorkdir)).replace(/,/g,'\r\n')+"\r\nUser Workdirs:\r\n";
 		wds+=localStorage["workdirs"].replace(/,/g,'\r\n');
 		wds=wds.replace(/\[/g,'');
 		wds=wds.replace(/\]/g,'');
@@ -318,7 +318,7 @@ damasflow_ondrop = function ( e )
 		}
 	}
 
-	var newPath= treatPath(path);
+	var newPath= processPath(path);
 
 	if(!newPath){
 		newPath=path;
@@ -333,6 +333,7 @@ damasflow_ondrop = function ( e )
 	damas.search_rest('file:'+newPath, function(res){
 		if(res.length>0)
 		{
+			window.document.location.hash = 'graph='+res[0];
 			damas.get_rest( 'graph/'+res[0], function(res){
 				graph.load( res);
 				//graph.load( JSON.parse( res ));
@@ -372,8 +373,8 @@ function addWorkdirs(wd){
 	console.log(localStorage["workdirs"]);
 }
 
-function treatPath(path){
-	var workdir=wd.concat(JSON.parse(localStorage["workdirs"]));
+function processPath(path){
+	var workdir=confWorkdir.concat(JSON.parse(localStorage["workdirs"]));
 	var tempWd=null;
 	workdir.sort(function(a, b){
 		return b.length - a.length;
