@@ -392,3 +392,86 @@ function loadConfJSON() {
 	xobj.send(null);
 	return xobj.responseText;
 }
+
+damas.upload_rest = function ( file, path, id, callback )
+{
+  var req = new XMLHttpRequest();
+  var fd= new FormData();
+  fd.append('path',path);
+  fd.append('id',id);
+  fd.append('file', file);
+  if(!document.getElementById('upload_div')){
+    var upload_div = new Element( 'div' );
+    var progress= new Element('progress');
+    var speed = new Element('span');
+    var stats= new Element('span');
+    var cancel= new Element('button');
+    var exit= new Element('button');
+    upload_div.appendChild(speed);
+    upload_div.appendChild(stats);
+    upload_div.appendChild(progress);
+    upload_div.appendChild(cancel);
+    upload_div.appendChild(exit);
+    upload_div.setAttribute("id","upload_div");
+    speed.setAttribute("id","speed");
+    progress.setAttribute("id",'progressBar');
+    stats.setAttribute("id",'stats');
+    exit.setAttribute("id",'exit');
+    cancel.setAttribute("id",'cancel');
+    cancel.innerHTML="Cancel";
+    exit.innerHTML="X";
+
+    exit.addEventListener("click",function(e){
+      upload_div.remove();
+    });
+    document.getElementById('graph').appendChild(upload_div);
+  }
+  else {
+    var cancel= document.getElementById('cancel');
+    var progress=document.getElementById('progressBar');
+    var speed= document.getElementById('speed');
+    var stats= document.getElementById('stats');
+  }
+  var d = new Date();
+  var starttime = oldtime = d.getTime();
+  progress.value=0;
+  /*req.upload.addEventListener("progress",progressHandler, false);
+  req.addEventListener("load", completeHandler, false);*/
+  if(id)
+    req.open("PUT", "./upload", callback !== undefined);
+  else
+    req.open("POST", "./upload", callback !== undefined);
+  cancel.addEventListener("click",function(e){
+    if(req.readyState<4){
+      req.abort();
+      req=null;
+      speed.innerHTML="---";
+      stats.innerHTML="Aborted";
+    }
+  });
+  req.upload.onprogress = function(e) {
+    progress.max=e.total;
+    var delta_size = e.loaded - progress.value;
+    var d = new Date();
+    var delta_time = d.getTime() - oldtime;
+    oldtime = d.getTime();
+    var tempSpeed=(( delta_size * 1000 / delta_time )) * 100;
+    speed.innerHTML=damas.utils.human_size((tempSpeed) / 100) +'/s';
+    progress.value = e.loaded;
+    stats.update( e.loaded + ' / ' + e.total + ' (' + Math.ceil( e.loaded * 100 / e.total ) + '%)' );
+  };
+  req.onreadystatechange = function(e){
+    if(req.readyState == 4)
+    {
+      if(req.status == 201)
+      {
+        var d = new Date();
+        var delta_time = d.getTime() - starttime;
+        speed.innerHTML= damas.utils.human_size( progress.max * 1000 / delta_time ) + '/s' ;
+        //setTimeout("500",function({upload_div.remove();}));
+        callback(JSON.parse(req.responseText));
+      }
+    }
+  }
+  req.send(fd);
+}
