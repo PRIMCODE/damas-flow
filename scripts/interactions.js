@@ -280,7 +280,6 @@ damasflow_ondrop = function ( e )
 		var keys = {};
 		for(i=0;i<e.dataTransfer.types.length;i++)
 		{
-			//console.log(e.dataTransfer.types[i]);
 			keys[e.dataTransfer.types[i]] = e.dataTransfer.getData(e.dataTransfer.types[i]);
 		}
 		console.log(keys);
@@ -291,7 +290,7 @@ damasflow_ondrop = function ( e )
 	if (keys['text/x-moz-url'])
 		path = keys['text/x-moz-url'];
 	if (keys['text/plain'])
-		path = keys['text/plain'];
+		path = keys['text/plain'].trim();
 
 	console.log(path);
 	if(!path)
@@ -322,10 +321,14 @@ damasflow_ondrop = function ( e )
 
 	if(!newPath){
 		newPath=path;
-		var newWd=prompt("Create this workdir?",path.replace(/\/[^\/]*$/,""));
+		var newWd=prompt("This file doesn't appear to be held in a defined local work directory, thus we cannot extract a relative path from its absolute path:\n"+path+"\nYou can set a workdir now:",path.replace(/\/[^\/]*$/,""));
 		if(newWd){
 			addWorkdirs(newWd);
 			newPath= path.replace(new RegExp("^"+newWd+"/?"), '');
+		}
+		else
+		{
+			return;
 		}
 	}
 	if(newPath.indexOf("/")!=0)
@@ -334,21 +337,22 @@ damasflow_ondrop = function ( e )
 		if(res.length>0)
 		{
 			window.document.location.hash = 'graph='+res[0];
-			damas.get_rest( 'graph/'+res[0], function(res){
-				graph.load( res);
+			//damas.get_rest( 'graph/'+res[0], function(res){
+			damas.graph( res[0], function(res){
+				graph.load(res);
 				//graph.load( JSON.parse( res ));
 			});
 			if( confirm('Update ' + decodeURIComponent(newPath) + '?'))
 			{
-				damas.upload_rest(e.dataTransfer.files[0],newPath, res[0], function(node){
+				upload_rest(e.dataTransfer.files[0],newPath, res[0], function(node){
 				});
 			}
 		}
 		else
 		{
-			if( confirm('Add ' + decodeURIComponent(newPath) + '?'))
+			if( newPath = prompt('Publish as', newPath))
 			{
-				damas.upload_rest(e.dataTransfer.files[0],newPath, null, function(node){
+				upload_rest(e.dataTransfer.files[0],newPath, null, function(node){
 					graph.newNode(node);
 				});
 			}
@@ -398,7 +402,7 @@ function loadConfJSON() {
 	return xobj.responseText;
 }
 
-damas.upload_rest = function ( file, path, id, callback )
+upload_rest = function ( file, path, id, callback )
 {
   var req = new XMLHttpRequest();
   var fd= new FormData();
@@ -406,12 +410,12 @@ damas.upload_rest = function ( file, path, id, callback )
   fd.append('id',id);
   fd.append('file', file);
   if(!document.getElementById('upload_div')){
-    var upload_div = new Element( 'div' );
-    var progress= new Element('progress');
-    var speed = new Element('span');
-    var stats= new Element('span');
-    var cancel= new Element('button');
-    var exit= new Element('button');
+    var upload_div = document.createElement( 'div' );
+    var progress= document.createElement('progress');
+    var speed = document.createElement('span');
+    var stats= document.createElement('span');
+    var cancel= document.createElement('button');
+    var exit= document.createElement('button');
     upload_div.appendChild(speed);
     upload_div.appendChild(stats);
     upload_div.appendChild(progress);
@@ -443,9 +447,9 @@ damas.upload_rest = function ( file, path, id, callback )
   /*req.upload.addEventListener("progress",progressHandler, false);
   req.addEventListener("load", completeHandler, false);*/
   if(id)
-    req.open("PUT", "./upload", callback !== undefined);
+    req.open("PUT", "/upload", callback !== undefined);
   else
-    req.open("POST", "./upload", callback !== undefined);
+    req.open("POST", "/upload", callback !== undefined);
   cancel.addEventListener("click",function(e){
     if(req.readyState<4){
       req.abort();
@@ -461,9 +465,9 @@ damas.upload_rest = function ( file, path, id, callback )
     var delta_time = d.getTime() - oldtime;
     oldtime = d.getTime();
     var tempSpeed=(( delta_size * 1000 / delta_time )) * 100;
-    speed.innerHTML=damas.utils.human_size((tempSpeed) / 100) +'/s';
+    speed.innerHTML=human_size((tempSpeed) / 100) +'/s';
     progress.value = e.loaded;
-    stats.update( e.loaded + ' / ' + e.total + ' (' + Math.ceil( e.loaded * 100 / e.total ) + '%)' );
+    stats.innerHTML = e.loaded + ' / ' + e.total + ' (' + Math.ceil( e.loaded * 100 / e.total ) + '%)';
   };
   req.onreadystatechange = function(e){
     if(req.readyState == 4)
@@ -472,7 +476,7 @@ damas.upload_rest = function ( file, path, id, callback )
       {
         var d = new Date();
         var delta_time = d.getTime() - starttime;
-        speed.innerHTML= damas.utils.human_size( progress.max * 1000 / delta_time ) + '/s' ;
+        speed.innerHTML= human_size( progress.max * 1000 / delta_time ) + '/s' ;
         //setTimeout("500",function({upload_div.remove();}));
         callback(JSON.parse(req.responseText));
       }
@@ -480,3 +484,20 @@ damas.upload_rest = function ( file, path, id, callback )
   }
   req.send(fd);
 }
+
+human_size = function ( filesize )
+{
+        var t = typeof filesize;
+        if( !( t === 'number' || t === 'string') )
+                return "?";
+        if (filesize>1024*1024*1024*1024)
+                return (filesize/1024/1024/1024/1024).toFixed(2) + " TiB";
+        if (filesize>1024*1024*1024)
+                return (filesize/1024/1024/1024).toFixed(2) + " GiB";
+        if (filesize>1024*1024)
+                return (filesize/1024/1024).toFixed(2) + " MiB";
+        if (filesize>1024)
+                return (filesize/1024).toFixed(2) + " KiB";
+        return filesize + " Bytes";
+}
+
