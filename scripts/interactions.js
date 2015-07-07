@@ -56,6 +56,7 @@ function keyup(e){
 }
 
 function keypress(e){
+	if (!window.mouseongraph) return;
 	var unicode=e.keyCode? e.keyCode : e.charCode;
 	console.log(unicode);
 	if(unicode === 46){ // Delete

@@ -31,4 +31,11 @@ require(["damas", "d3", "graph", "main_common", "interactions", "ao", "av" ], fu
 	graph.svg.style.width = window.innerWidth + 'px';
 
 	process_hash();
+
+	graph.svg.addEventListener('mouseleave', function(e){
+		window.mouseongraph = false;
+	});
+	graph.svg.addEventListener('mouseenter', function(e){
+		window.mouseongraph = true;
+	});
 });
