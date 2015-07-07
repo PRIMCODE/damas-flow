@@ -38,6 +38,7 @@ function node_pressed(e){
 		return false;
 	}
 	if(window['assetOverlay']){
+		this.file = "/file"+this.file;
 		assetOverlay(this);
 	}
 }
