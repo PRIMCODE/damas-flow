@@ -20,9 +20,7 @@ div#graphHelpFrame {
 	right: 0;
 	top: 0;
 	bottom: 0;
-/*
 	pointer-events:none;
-*/
 	background: url('cheatsheet.svg') no-repeat top left;
 	background-size: contain;
 	background-position: 50% 50%;

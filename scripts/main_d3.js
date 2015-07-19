@@ -6,13 +6,14 @@ require.config({
 		'graph': 'graphViewer/graph-d3',
 		'main_common': "main_common",
 		'interactions': "interactions",
+		'sha1': "vendor/sha1",
 		'ao': "assetViewer/assetOverlay",
 		'av': "assetViewer/assetViewerSelector"
 	},
 	urlArgs: "v=" +  (new Date()).getTime()
 });
 
-require(["damas", "d3", "graph", "main_common", "interactions", "ao", "av" ], function(damas, d3, damasGraph, interactions){
+require(["damas", "d3", "graph", "main_common", "interactions", "sha1", "ao", "av" ], function(damas, d3, damasGraph, interactions){
 	loadCss("style.css");
 	loadCss("scripts/graphViewer/graph-common.css");
 	loadCss("scripts/assetViewer/assetOverlay.css");
@@ -24,6 +25,7 @@ require(["damas", "d3", "graph", "main_common", "interactions", "ao", "av" ], fu
 	enable_drop(graph.svg, graph);
 	enable_keyboard(graph.svg);
 	var help = document.querySelector('#graphHelpFrame');
+	help.style.display = 'none';
 	help.addEventListener('click', function(e){
 		e.target.style.display = 'none';
 	});

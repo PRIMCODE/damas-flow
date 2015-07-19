@@ -39,9 +39,20 @@ function node_pressed(e){
 	}
 	if(window['assetOverlay']){
 		this.file = "/file"+this.file;
-		assetOverlay(this);
+		var newObject = JSON.parse(JSON.stringify(this));
+		assetOverlay(newObject);
+		var newHash = getHash();
+		newHash.view = this._id;
+		doHash(newHash);
 	}
 }
+
+document.addEventListener("assetOverlay:close", function(){
+	var newHash = getHash();
+	delete newHash['view'];
+	doHash(newHash);
+}, false);
+
 
 function keydown(e){
 	if (e.shiftKey)
@@ -335,11 +346,17 @@ damasflow_ondrop = function ( e )
 	}
 	if(newPath.indexOf("/")!=0)
 		newPath= "/"+newPath;
+
+	//sha1sum(e.dataTransfer.files[0]);
+
 	damas.search_rest('file:'+newPath, function(res){
 		if(res.length>0)
 		{
-			window.document.location.hash = 'graph='+res[0];
+			//window.document.location.hash = 'graph='+res[0];
 			//damas.get_rest( 'graph/'+res[0], function(res){
+			var newHash = getHash();
+			newHash.graph += ',' + res[0];
+			doHash(newHash);
 			damas.graph( res[0], function(res){
 				graph.load(res);
 				//graph.load( JSON.parse( res ));
@@ -362,6 +379,93 @@ damasflow_ondrop = function ( e )
 	});
 	return;
 }
+
+CryptoJS.enc.u8array = {
+        /**
+         * Converts a word array to a Uint8Array.
+         *
+         * @param {WordArray} wordArray The word array.
+         *
+         * @return {Uint8Array} The Uint8Array.
+         *
+         * @static
+         *
+         * @example
+         *
+         *     var u8arr = CryptoJS.enc.u8array.stringify(wordArray);
+         */
+        stringify: function (wordArray) {
+            // Shortcuts
+            var words = wordArray.words;
+            var sigBytes = wordArray.sigBytes;
+
+            // Convert
+            var u8 = new Uint8Array(sigBytes);
+            for (var i = 0; i < sigBytes; i++) {
+                var byte = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+                u8[i]=byte;
+            }
+
+            return u8;
+        },
+
+        /**
+         * Converts a Uint8Array to a word array.
+         *
+         * @param {string} u8Str The Uint8Array.
+         *
+         * @return {WordArray} The word array.
+         *
+         * @static
+         *
+         * @example
+         *
+         *     var wordArray = CryptoJS.enc.u8array.parse(u8arr);
+         */
+        parse: function (u8arr) {
+            // Shortcut
+            var len = u8arr.length;
+
+            // Convert
+            var words = [];
+            for (var i = 0; i < len; i++) {
+                words[i >>> 2] |= (u8arr[i] & 0xff) << (24 - (i % 4) * 8);
+            }
+
+            return CryptoJS.lib.WordArray.create(words, len);
+        }
+    };
+
+
+
+        function sha1sum(file) {
+            //var oFile = document.getElementById('uploadFile').files[0];
+            var sha1 = CryptoJS.algo.SHA1.create();
+            var read = 0;
+            var unit = 1024 * 1024;
+            var blob;
+            var reader = new FileReader();
+            reader.readAsArrayBuffer(file.slice(read, read + unit));
+            reader.onload = function(e) {
+		//console.log(e.target.result);
+                var bytes = CryptoJS.lib.WordArray.create(e.target.result);
+                //var bytes = CryptoJS.enc.Latin1.parse(e.target.result);
+		//console.log(bytes);
+                sha1.update(bytes);
+                //sha1.update(CryptoJS.enc.u8array.stringify(e.target.result));
+                //sha1.update(new Buffer(new Uint8Array(e.target.result) ));
+		//sha1.update(e.target.result);
+                read += unit;
+		console.log(read);
+                if (read < file.size) {
+                    blob = file.slice(read, read + unit);
+                    reader.readAsArrayBuffer(blob);
+                } else {
+                    var hash = sha1.finalize();
+                    console.log(hash.toString(CryptoJS.enc.Hex)); // print the result
+                }
+            }
+        }
 
 function removeWorkdirs(wd){
 	var workdirs=JSON.parse(localStorage["workdirs"]);
