@@ -38,8 +38,8 @@ function node_pressed(e){
 		return false;
 	}
 	if(window['assetOverlay']){
-		this.file = "/file"+this.file;
 		var newObject = JSON.parse(JSON.stringify(this));
+		newObject.file = "/file"+newObject.file;
 		assetOverlay(newObject);
 		var newHash = getHash();
 		newHash.view = this._id;
