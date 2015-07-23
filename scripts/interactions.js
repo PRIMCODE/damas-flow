@@ -355,7 +355,8 @@ damasflow_ondrop = function ( e )
 			//window.document.location.hash = 'graph='+res[0];
 			//damas.get_rest( 'graph/'+res[0], function(res){
 			var newHash = getHash();
-			newHash.graph += ',' + res[0];
+			if(!newHash.graph) newHash.graph = res[0];
+			else newHash.graph += ',' + res[0];
 			doHash(newHash);
 			damas.graph( res[0], function(res){
 				graph.load(res);

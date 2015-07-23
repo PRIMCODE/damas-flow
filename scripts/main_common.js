@@ -48,6 +48,7 @@ process_hash = function() {
 }
 
 function getHash() {
+	if(!window.location.hash) return {};
 	var hash = window.location.hash.slice(1);
 	var array = hash.split("&");
 	var result = {};
