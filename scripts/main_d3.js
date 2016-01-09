@@ -19,7 +19,7 @@ require(["damas", "d3", "graph", "main_common", "interactions", "sha1", "ao", "a
 	loadCss("scripts/assetViewer/assetOverlay.css");
 	window.damas = damas;
 	//damas.server = '/damas/server';
-	damas.server = '/';
+	damas.server = '/api/';
 	var graph = new damasGraph( document.getElementById('graph'));
 	window.graph = graph;
 	enable_drop(graph.svg, graph);
