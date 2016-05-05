@@ -1,17 +1,51 @@
 body {
 	margin: 0;
+	font-family: monospace;
 }
 
+.xflexparent {
+	display: flex;
+	flex-direction: row;
+	align-items: stretch;
+}
+
+#xgraph {
+	order: 1;
+	flex-grow: 1;
+	flex-shrink: 1;
+}
+
+svg#svggraph {
+	height: 100% !important;
+}
+
+#xsidepanel {
+	order: 2;
+	flex-basis: 300px;
+	overflow: auto;
+}
+#sidepanel {
+	position: absolute;
+	top: 0;
+	right: 0;
+	overflow: auto;
+	width: 300px;
+	background: rgba(256,256,256,.6) ;
+	padding: 1ex;
+}
+
+
 div#graphDebug {
+	/*z-index: -1; /* force behind svg*/
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 100%;
-	height: 100%;
+	bottom: 0;
+	right: 0;
 	pointer-events:none;
 	color: orange;
-	font-family: monospace;
 	overflow: auto;
+	padding: 1ex;
 }
 
 div#graphHelpFrame {

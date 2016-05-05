@@ -27,7 +27,7 @@ function enable_keyboard( svg ) {
 function node_pressed(e){
 	if(e.shiftKey)
 	{
-		graph.selectToggle( this );
+		graph.selectToggle(this);
 		e.preventDefault();
 		return false;
 	}
@@ -37,6 +37,32 @@ function node_pressed(e){
 		e.preventDefault();
 		return false;
 	}
+
+	// ####
+	graph.unselectAll();
+	graph.selectToggle(this);
+	var div = document.querySelector('#sidepanel');
+	if (!div)
+	{
+		div = document.createElement('div')
+		div.setAttribute('id', 'sidepanel' )
+	}
+	div.innerHTML = '';
+	var keys = Object.keys(this)
+	keys.sort();
+	for (key of keys)
+	{
+		var attr_html = document.createElement('div')
+		if(this[key].length < 25)
+			attr_html.innerHTML = '<b>'+key+'</b> '+this[key]
+		else
+			attr_html.innerHTML = '<b>'+key+'</b><br/>'+this[key]
+		//var attr_text = document.createTextNode(key + ' = ' + this[key])
+		//attr_html.appendChild(attr_text)
+		div.appendChild(attr_html)
+	}
+	// ####
+
 	if(window['assetOverlay']){
 		var newObject = JSON.parse(JSON.stringify(this));
 		newObject.file = "/file"+newObject.file;
@@ -73,14 +99,16 @@ function keypress(e){
 	if(unicode === 46){ // Delete
 		// REMOVE SELECTION (from local graph only, this is not a deletion in remote database)
 		//for(node in graph.selection)
-		graph.unhighlightElements();
+		//graph.unhighlightElements();
 		var selection = graph.selection; //selection array
-		for(var i = selection.length -1; i >= 0; i--) //For in reverse because each loop the lenght change
+		for(var i = selection.length -1; i >= 0; i--) //For in reverse because each loop the length change
 		{
 			var node = selection[i];
-			console.log(node);
+			//console.log(node);
 			if(node.src_id && node.tgt_id)
 			{
+				continue;
+/*
 				(function(node){
 					var id = node._id;
 					damas.delete_rest(id, function(success){
@@ -89,12 +117,14 @@ function keypress(e){
 					}
 				});
 				})(node);
+*/
 			}
 			else
 			{
 				graph.removeNode(node);
 			}
 		}
+		doHash({graph:Object.keys(graph.node_lut).join(',')});
 		return;
 
 	}
@@ -124,7 +154,8 @@ function keypress(e){
 	if(unicode === 101){ // e
 		if( confirm('Erase graph?') )
 		{
-			graph.erase();
+			window.location = window.location.pathname;
+			//graph.erase();
 		}
 		return;
 	}
@@ -187,8 +218,29 @@ function keypress(e){
 		return;
 	}
 	if(unicode === 116){ // t
-		graph.svg.querySelector('g.texts').classList.toggle('hidden');
 		//TOGGLE TEXTS
+		graph.svg.querySelector('g.texts').classList.toggle('hidden');
+		return;
+	}
+	if(unicode === 117){ // u
+		// UNLINK - DELETE SELECTED LINKS FROM THE DB
+		var selection = graph.selection; //selection array
+		for(var i = selection.length -1; i >= 0; i--) //For in reverse because each loop the length change
+		{
+			var node = selection[i];
+			console.log(node);
+			if(node.src_id && node.tgt_id)
+			{
+				(function(node){
+					var id = node._id;
+					damas.delete_rest(id, function(success){
+					if(success){
+						graph.removeNode(node);
+					}
+				});
+				})(node);
+			}
+		}
 		return;
 	}
 	if(unicode === 111){ // o
@@ -331,6 +383,7 @@ damasflow_ondrop = function ( e )
 	}
 
 	var newPath= processPath(path);
+	console.log(newPath);
 
 	if(!newPath){
 		newPath=path;
@@ -362,111 +415,32 @@ damasflow_ondrop = function ( e )
 				graph.load(res);
 				//graph.load( JSON.parse( res ));
 			});
+/* UPLOAD
 			if( confirm('Update ' + decodeURIComponent(newPath) + '?'))
 			{
 				upload_rest(e.dataTransfer.files[0],newPath, res[0], function(node){
 				});
 			}
+*/
 		}
 		else
 		{
+			if( confirm('Register ' + decodeURIComponent(newPath) + '?'))
+			{
+				damas.create({file: decodeURIComponent(newPath)}, function(res){ console.log(res); });
+			}
+/* UPLOAD
 			if( newPath = prompt('Publish as', newPath))
 			{
 				upload_rest(e.dataTransfer.files[0],newPath, null, function(node){
 					graph.newNode(node);
 				});
 			}
+*/
 		}
 	});
 	return;
 }
-
-CryptoJS.enc.u8array = {
-        /**
-         * Converts a word array to a Uint8Array.
-         *
-         * @param {WordArray} wordArray The word array.
-         *
-         * @return {Uint8Array} The Uint8Array.
-         *
-         * @static
-         *
-         * @example
-         *
-         *     var u8arr = CryptoJS.enc.u8array.stringify(wordArray);
-         */
-        stringify: function (wordArray) {
-            // Shortcuts
-            var words = wordArray.words;
-            var sigBytes = wordArray.sigBytes;
-
-            // Convert
-            var u8 = new Uint8Array(sigBytes);
-            for (var i = 0; i < sigBytes; i++) {
-                var byte = (words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
-                u8[i]=byte;
-            }
-
-            return u8;
-        },
-
-        /**
-         * Converts a Uint8Array to a word array.
-         *
-         * @param {string} u8Str The Uint8Array.
-         *
-         * @return {WordArray} The word array.
-         *
-         * @static
-         *
-         * @example
-         *
-         *     var wordArray = CryptoJS.enc.u8array.parse(u8arr);
-         */
-        parse: function (u8arr) {
-            // Shortcut
-            var len = u8arr.length;
-
-            // Convert
-            var words = [];
-            for (var i = 0; i < len; i++) {
-                words[i >>> 2] |= (u8arr[i] & 0xff) << (24 - (i % 4) * 8);
-            }
-
-            return CryptoJS.lib.WordArray.create(words, len);
-        }
-    };
-
-
-
-        function sha1sum(file) {
-            //var oFile = document.getElementById('uploadFile').files[0];
-            var sha1 = CryptoJS.algo.SHA1.create();
-            var read = 0;
-            var unit = 1024 * 1024;
-            var blob;
-            var reader = new FileReader();
-            reader.readAsArrayBuffer(file.slice(read, read + unit));
-            reader.onload = function(e) {
-		//console.log(e.target.result);
-                var bytes = CryptoJS.lib.WordArray.create(e.target.result);
-                //var bytes = CryptoJS.enc.Latin1.parse(e.target.result);
-		//console.log(bytes);
-                sha1.update(bytes);
-                //sha1.update(CryptoJS.enc.u8array.stringify(e.target.result));
-                //sha1.update(new Buffer(new Uint8Array(e.target.result) ));
-		//sha1.update(e.target.result);
-                read += unit;
-		console.log(read);
-                if (read < file.size) {
-                    blob = file.slice(read, read + unit);
-                    reader.readAsArrayBuffer(blob);
-                } else {
-                    var hash = sha1.finalize();
-                    console.log(hash.toString(CryptoJS.enc.Hex)); // print the result
-                }
-            }
-        }
 
 function removeWorkdirs(wd){
 	var workdirs=JSON.parse(localStorage["workdirs"]);
@@ -492,9 +466,11 @@ function processPath(path){
 	});
 	for(var w=0;w<workdir.length;w++){
 		if(workdir[w][workdir[w].length-1]==="/")
-			tempWd= workdir[w];
+			tempWd = workdir[w].substring(0, workdir[w].length -1);
 		else
-			tempWd= workdir[w]+"/";
+			tempWd= workdir[w];
+		//else
+			//tempWd= workdir[w]+"/";
 		if(path.indexOf(tempWd)===0)
 			return path.replace(tempWd,"");
 	}
@@ -504,7 +480,7 @@ function processPath(path){
 function loadConfJSON() {
 	var xobj = new XMLHttpRequest();
 			xobj.overrideMimeType("application/json");
-	xobj.open('GET', 'conf.json', false);
+	xobj.open('GET', 'config.json', false);
 	xobj.send(null);
 	return xobj.responseText;
 }
@@ -607,4 +583,3 @@ human_size = function ( filesize )
                 return (filesize/1024).toFixed(2) + " KiB";
         return filesize + " Bytes";
 }
-

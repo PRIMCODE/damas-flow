@@ -2,15 +2,16 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 window.addEventListener("resize", function() {
-	graph.svg.style.height = window.innerHeight - 4 + 'px';
-	graph.svg.style.width = window.innerWidth + 'px';
+	document.body.style.height = window.innerHeight + 'px';
+	//graph.svg.style.height = window.innerHeight - 4 + 'px';
+	//graph.svg.style.width = window.innerWidth + 'px';
 });
 
 window.addEventListener("hashchange", function() {
 	//process_hash();
 });
 
-
+/*
 window.addEventListener('mousedown', function(){
 	var help = document.querySelector('#graphHelpFrame');
 	if (help.style.display != 'none')
@@ -19,7 +20,7 @@ window.addEventListener('mousedown', function(){
 	}
 	return;
 });
-
+*/
 
 process_hash = function() {
 	//if(/#graph=/.test(location.hash))
@@ -43,8 +44,20 @@ process_hash = function() {
 	}
 	else
 	{
-		document.querySelector('#graphHelpFrame').style.display = 'block';
+		var hf = document.querySelector('#graphHelpFrame');
+		if(hf)
+			hf.style.display = 'block';
 	}
+}
+
+damas_connect = function (server_url, callback)
+{
+	damas.server = server_url;
+	if (localStorage)
+	{
+		damas.token = localStorage.getItem("token");
+	}
+	damas.verify(callback);
 }
 
 function getHash() {
