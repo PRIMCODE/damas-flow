@@ -15,8 +15,6 @@ require.config({
 
 require(["damas", "d3", "graph", "main_common", "interactions", "sha1", "ao", "av" ], function(damas, d3, damasGraph, interactions){
 	window.damas = damas;
-	//damas.server = '/damas/server';
-	//damas.server = '/api/';
 	damas_connect('/api/', function(res){
 		if (!res)
 		{
