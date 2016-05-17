@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0 maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"/>
+		<script data-main="scripts/main_flow" src="scripts/vendor/require.js"></script>
+	</head>
+	<body class="flexparent">
+		<div id="graph"></div>
+		<div id="sidepanel"></div>
+		<div id="graphDebug">
+			FILE FLOW<br/>
+			Déposez des fichiers depuis les dossiers de travail prédéfinis:
+			<span id="workdirs_default"></span><br/>
+			ou depuis ceux définis par l'utilisateur (w pour editer):
+			<span id="workdirs"></span><br/>
+<pre>
+Raccourcis:
+	<b>`shift+clic`</b>: selectionner un node ou un lien
+	<b>`l`</b>: lier 2 nodes selectionnés (premier vers deuxième)
+	<b>`u`</b>: supprimer de la database les liens selectionnés (unlink)
+	<b>`del`</b>: effacer du viewport les nodes sélectionnés (la database est inchangée)
+	<b>`w`</b>: editer les chemins vers les dossiers de travail
+	<b>`x`</b>: exporter le graphe
+	<b>`d`</b>: afficher/masquer ce texte (debug)
+</pre>
+			DEBUG:
+			<span id="graphDebugNbNodes">0</span> node(s),
+			<span id="graphDebugNbEdges">0</span> edge(s),
+			<span id="graphDebugNbSelection">0</span> selected<br/>
+			<div id="graphDebugFileKeys"></div>
+		</div>
+	</body>
+</html>
