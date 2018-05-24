@@ -1,19 +1,20 @@
 require.config({
 	paths: {
-		'damas': "damas",
+		'damas': "../vendor/damas",
 		'd3': 'graphViewer/vendor/d3',
 		'graph-common': "graphViewer/graph-common",
 		'graph': 'graphViewer/graph-d3',
 		'main_common': "main_common",
 		'interactions': "interactions",
-		'sha1': "vendor/sha1",
+		'sha1': "../vendor/sha1",
 		'ao': "assetViewer/assetOverlay",
 		'av': "assetViewer/assetViewerSelector"
 	},
 	urlArgs: "v=" +  (new Date()).getTime()
 });
 
-require(["damas", "d3", "graph", "main_common", "interactions", "sha1", "ao", "av" ], function(damas, d3, damasGraph, interactions){
+//require(["damas", "d3", "graph", "main_common", "interactions", "sha1", "ao", "av" ], function(damas, d3, damasGraph, interactions){
+require(["damas", "d3", "graph", "main_common", "interactions", "sha1" ], function(damas, d3, damasGraph, interactions){
 	window.damas = damas;
 	damas_connect('/api/', function(res){
 		if (!res)
