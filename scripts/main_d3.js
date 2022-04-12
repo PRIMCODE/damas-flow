@@ -16,7 +16,7 @@ require.config({
 //require(["damas", "d3", "graph", "main_common", "interactions", "sha1", "ao", "av" ], function(damas, d3, damasGraph, interactions){
 require(["damas", "d3", "graph", "main_common", "interactions", "sha1" ], function(damas, d3, damasGraph, interactions){
 	window.damas = damas;
-	damas_connect('/api/', function(res){
+	damas_connect('', function(res){
 		if (!res)
 		{
 			window.location='signin.html'
