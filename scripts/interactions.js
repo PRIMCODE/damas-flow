@@ -24,6 +24,10 @@ function enable_keyboard( svg ) {
 	window.addEventListener('keyup', keyup );
 }
 
+function damas_open( id ) {
+	console.log(damas.read(id));
+}
+
 function node_pressed(e){
 	if(e.shiftKey)
 	{
@@ -182,15 +186,15 @@ function keypress(e){
 			graph.unhighlightElements();
 			var id1 = graph.selection[0]._id;
 			var id2 = graph.selection[1]._id;
-			damas.create_rest({
-				src_id: id1,
-				tgt_id: id2 }, function(node){
-					if(!node)
-					{
+			var keys = prompt('keys', '{"_id":"{#}"}');
+			var obj = JSON.parse(keys);
+			obj.src_id = id1;
+			obj.tgt_id = id2;
+			damas.create_rest( obj, function(node){
+					if(!node) {
 						console.log("create link failed! ");
 					}
-					else
-					{
+					else {
 						graph.newEdge(node);
 						console.log('LINK CREATED! src_id: '+ id1+', tgt_id: '+id2 );
 					}

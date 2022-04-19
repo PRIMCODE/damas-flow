@@ -17,3 +17,8 @@ div#graphDebug {
 	padding: 1ex;
 }
 */
+
+.node {
+fill: red;
+background-color: red;
+}
