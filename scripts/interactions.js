@@ -255,7 +255,7 @@ function keypress(e){
 	}
 	if(unicode === 99){ // c
 		// CREATE NODE
-		var keys = prompt('keys', '{"label":"test"}');
+		var keys = prompt('keys', '{"_id":"{#}", "name":"nodeName"}');
 		damas.create_rest(JSON.parse(keys), function(node){
 			console.log(node);
 			graph.newNode(node);
